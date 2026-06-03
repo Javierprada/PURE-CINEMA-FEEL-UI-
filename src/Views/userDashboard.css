@@ -390,8 +390,6 @@
 /* HERO SPOTLIGHT GRID */
 .hero-spotlight-grid {
   position: relative;
-  padding-top: 15px;
-  margin-top: 40px;
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 28px;

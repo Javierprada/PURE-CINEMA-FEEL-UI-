@@ -6,15 +6,41 @@ import DashboardHome from './DashboardHome';
 import Statistics from './Statistics';
 import Logs from './Logs';
 import PopoverAdmin from './PopoverAdmin';
+import GaleriaInterna from './GaleriaInterna';
+
+
+
+
 
 
 const AdminDashb = () => {
 
     // 1. NUEVO ESTADO: Controla que pantalla se renderiza en el Main.
-    const [activeSection, setActiveSection] = useState('injection');    
+    const [activeSection, setActiveSection] = useState('injection'); 
+    //2. NUEVO ESTADO: Controla el modal.   
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+    
     const handleOpenPopover = () => setIsPopoverOpen (true);
     const handleClosePopover = () => setIsPopoverOpen (false);
+
+    //3.
+    const [isScanningGallery, setIsScanningGallery] = useState(false);
+    
+    
+
+    //4. Función escaneo de matriz
+    const handleInspectGallery = () => {
+        setIsScanningGallery(true);
+        
+
+        
+        // Temporizador
+        setTimeout(()=>{
+            setIsScanningGallery(false); // El botón vuele a la normalidad
+            setActiveSection('gallery'); // Aqui es donde se renderiza el contenido de Galeria Interna
+        }, 1900); // 1.5 segundos de retraso artificial.
+    };
+   
 
 
     // Estado unificado del formulario listo para subir a MySQL workbench
@@ -155,8 +181,14 @@ const AdminDashb = () => {
                     </div>
 
                     <div>
-                        <button className="admin-v4-btn-preview">
-                            INSPECCIONAR GALERÍA INTERNA
+                        <button 
+                            onClick={handleInspectGallery}
+                            disabled={isScanningGallery}
+                            className={`admin-v4-btn-preview ${isScanningGallery ? 'gallery-internal-btn-inspect' : ''} `}
+                            
+                        >
+                            
+                            {isScanningGallery ? "⏳ EJECUTANDO ESCANEO DE MATRIZ.." : "INSPECCIONAR GALLERÍA INTERNA"}
                         </button>
                     </div>
                 </header>
@@ -365,7 +397,7 @@ const AdminDashb = () => {
 
                         </form>
                     )}
-
+                    {activeSection === 'gallery' && <GaleriaInterna isLoading={isScanningGallery} />}
                     {activeSection === 'library' && <MovieLibrary/>}
                     {activeSection === 'dashboard' && <DashboardHome/>}
                     {activeSection === 'stats' && <Statistics/>}

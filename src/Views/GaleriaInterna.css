@@ -1,0 +1,126 @@
+
+/* Contenedor estructural del módulo */
+.gallery-internal-wrapper {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Recreación exacta del botón de tu imagen image_946772.png */
+.gallery-internal-btn-inspect {
+  background: transparent;
+  border: 1px solid #00fbfb;
+  color: #00fbfb;
+  font-family: 'Orbitron', 'Azeret Mono', monospace, sans-serif;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  padding: 14px 28px;
+  cursor: pointer;
+  width: fit-content;
+  /* Sutiles sombras de neón cian del ecosistema */
+  box-shadow: inset 0 0 8px rgba(0, 251, 251, 0.1), 0 0 8px rgba(0, 251, 251, 0.2);
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.gallery-internal-btn-inspect:hover {
+  background: rgba(0, 251, 251, 0.05);
+  box-shadow: inset 0 0 15px rgba(0, 251, 251, 0.2), 0 0 15px rgba(0, 251, 251, 0.5);
+  transform: translateY(-1px);
+}
+
+/* Micro-interacción UX: Estado escaneando (Cambio a Fuchsia/Magenta eléctrico) */
+.gallery-internal-btn-scanning {
+  border-color: #ff00ff !important;
+  color: #ff00ff !important;
+  animation: gallery-internal-glitch-blink 0.4s infinite alternate;
+  box-shadow: 0 0 15px rgba(255, 0, 255, 0.4) !important;
+  cursor: wait;
+}
+
+@keyframes gallery-internal-glitch-blink {
+  0% { opacity: 0.6; }
+  100% { opacity: 1; }
+}
+
+/* --- CONTENEDOR DE LA GALERÍA ESTILO TERMINAL --- */
+.gallery-internal-table-container {
+  background: rgba(18, 18, 18, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-left: 4px solid #00fbfb; /* Match con las tarjetas de estadísticas */
+  border-radius: 4px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  font-family: 'Azeret Mono', monospace;
+  font-size: 13px;
+  overflow: hidden;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* Cabecera de la tabla */
+.gallery-internal-table-header {
+  display: grid;
+  grid-template-columns: 60px 2fr 1fr 1fr 1fr;
+  padding: 14px 20px;
+  background: rgba(0, 251, 251, 0.03);
+  color: rgba(255, 255, 255, 0.4);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Filas del listado */
+.gallery-internal-table-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.gallery-internal-table-row {
+  display: grid;
+  grid-template-columns: 60px 2fr 1fr 1fr 1fr;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  align-items: center;
+  transition: background 0.2s ease;
+}
+
+.gallery-internal-table-row:last-child {
+  border-bottom: none;
+}
+
+.gallery-internal-table-row:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* Clases utilitarias de texto blindadas */
+.gallery-internal-text-cyan { color: #00fbfb; text-shadow: 0 0 8px rgba(0, 251, 251, 0.3); }
+.gallery-internal-text-magenta { color: #ff00ff; text-shadow: 0 0 8px rgba(255, 0, 255, 0.3); }
+.gallery-internal-text-white { color: #ffffff; }
+.gallery-internal-text-dim { color: rgba(255, 255, 255, 0.5); }
+
+/* Etiquetas de estado estilo HUD */
+.gallery-internal-status-tag {
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  padding: 2px 8px;
+  border-radius: 2px;
+  width: fit-content;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.gallery-internal-status-ready {
+  color: #00ff04;
+  border: 1px solid rgba(0, 255, 4, 0.3);
+  text-shadow: 0 0 6px rgba(0, 255, 4, 0.4);
+}
+
+.gallery-internal-status-encrypted {
+  color: #ff00ff;
+  border: 1px solid rgba(255, 0, 255, 0.3);
+  text-shadow: 0 0 6px rgba(255, 0, 255, 0.4);
+}

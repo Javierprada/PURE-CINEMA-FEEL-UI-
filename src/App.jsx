@@ -14,6 +14,7 @@ import DashboardHome from './Views/DashboardHome';
 import Statistics from './Views/Statistics';
 import Logs from './Views/Logs';
 import PopoverAdmin from './Views/PopoverAdmin';
+import GaleriaInterna from './Views/GaleriaInterna';
 
 
 
@@ -42,6 +43,7 @@ function App() {
             <Route path='/statistics' element={<Statistics/>} ></Route>
             <Route path='/logs' element={<Logs/>} ></Route>
             <Route path='/popoverAdmin' element={<PopoverAdmin/>} ></Route>
+            <Route path='/inspeccion-galleria' element={<GaleriaInterna/>} ></Route>
           </Routes>
       
 
