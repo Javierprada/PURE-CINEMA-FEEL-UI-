@@ -1,0 +1,351 @@
+
+.statistics-v4-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 1;
+    background-color: transparent;
+}
+
+.statistics-v4-section-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    align-items: flex-start;
+    text-align: left;
+    position: relative;
+    z-index: 1;
+    border-left: 4px solid #ff00ff;
+    padding-left: 12px;
+}
+
+.statistics-v4-section-title {
+    font-family: 'Azeret Mono', monospace, sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 0.18em;
+    color: #ffffff;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+.statistics-v4-section-subtitle {
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+.statistics-v4-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+    width: 100%;
+}
+
+.statistics-v4-card {
+    background: rgba(18, 18, 18, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 4px;
+    padding: 1.5rem;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 260px;
+    box-sizing: border-box;
+    overflow: hidden;
+    position: relative;
+}
+
+.statistics-v4-cyan-glow {
+    border-left: 4px solid #00fbfb;
+    box-shadow: inset 5px 0 15px rgba(0, 251, 251, 0.03);
+}
+
+.statistics-v4-magenta-glow {
+    border-left: 4px solid #ff00ff;
+    box-shadow: inset 5px 0 15px rgba(255, 0, 255, 0.03);
+}
+
+.statistics-v4-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.statistics-v4-card-label {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.statistics-v4-icon {
+    font-size: 1.5rem !important;
+}
+
+.statistics-v4-card-footer {
+    font-size: 0.7rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: rgba(255, 255, 255, 0.4);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding-top: 0.75rem;
+    margin-top: 1rem;
+}
+
+.statistics-v4-cyan-text { color: #00fbfb; text-shadow: 0 0 8px rgba(0, 251, 251, 0.4); }
+.statistics-v4-magenta-text { color: #ff00ff; text-shadow: 0 0 8px rgba(255, 0, 255, 0.4); }
+.statistics-v4-yellow-text { color: #bfd043; text-shadow: 0 0 8px rgba(191, 208, 67, 0.4); }
+
+.statistics-v4-bg-cyan { background-color: #00fbfb; }
+.statistics-v4-bg-magenta { background-color: #ff00ff; }
+.statistics-v4-bg-yellow { background-color: #bfd043; }
+
+.statistics-v4-geo-workspace {
+    flex-grow: 1;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    min-height: 120px;
+    padding: 0.5rem 0;
+}
+
+.statistics-v4-geo-chart-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    width: 100%;
+    height: 100%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.statistics-v4-bar-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    width: 20%;
+}
+
+.statistics-v4-bar-multi {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    height: 90px;
+    width: 100%;
+    justify-content: center;
+}
+
+.statistics-v4-subbar {
+    width: 8px;
+    border-radius: 1px 1px 0 0;
+    transition: height 0.5s ease;
+}
+
+.statistics-v4-bar-tag {
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.4);
+    font-family: 'Azeret Mono', monospace;
+}
+
+.statistics-v4-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.statistics-v4-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.65rem;
+}
+
+.statistics-v4-donut-workspace {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: 1rem;
+    padding: 0.5rem 0;
+}
+
+.statistics-v4-donut-chart {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: conic-gradient(
+        #ff00ff 0% 65%, 
+        #00fbfb 65% 90%, 
+        #bfd043 90% 100%
+    );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 15px rgba(255, 0, 255, 0.15);
+}
+
+.statistics-v4-donut-hole {
+    width: 60px;
+    height: 60px;
+    background-color: #121212;
+    border-radius: 50%;
+}
+
+.statistics-v4-donut-legends {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.statistics-v4-donut-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.statistics-v4-donut-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.statistics-v4-donut-title {
+    margin: 0;
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.statistics-v4-donut-pct {
+    margin: 0;
+    font-size: 0.8rem;
+    font-weight: bold;
+    font-family: 'Azeret Mono', monospace;
+}
+
+.statistics-v4-line-workspace {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    min-height: 110px;
+}
+
+.statistics-v4-line-chart-grid {
+    width: 100%;
+    height: 95px;
+    background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+}
+
+.statistics-v4-svg-graph {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.statistics-v4-internal-tag {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 2px 6px;
+    font-size: 0.6rem;
+    color: rgba(255, 255, 255, 0.6);
+    border-radius: 2px;
+}
+
+.statistics-v4-actions-panel {
+    background: rgba(18, 18, 18, 0.4);
+    border: 1px solid rgba(0, 251, 251, 0.1);
+    border-radius: 4px;
+    padding: 1.5rem;
+    box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.statistics-v4-panel-title {
+    font-family: 'Azeret Mono', monospace;
+    font-size: 0.75rem;
+    color: #00fbfb;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.statistics-v4-buttons-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.5rem;
+    width: 100%;
+}
+
+.statistics-v4-btn-execute {
+    background: transparent;
+    color: #00fbfb;
+    font-family: 'Azeret Mono', monospace;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 1rem 2.5rem;
+    border: 1px solid #00fbfb;
+    cursor: pointer;
+    letter-spacing: 0.15em;
+    transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+    position: relative;
+    clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+    box-shadow: 0 0 15px rgba(0, 251, 251, 0.1);
+}
+
+.statistics-v4-btn-execute:hover {
+    background: #00fbfb;
+    color: #000000;
+    box-shadow: 0 0 30px rgba(0, 251, 251, 0.45);
+    transform: translateY(-2px);
+}
+
+.statistics-v4-btn-execute:active {
+    transform: translateY(1px);
+    box-shadow: 0 0 10px rgba(0, 251, 251, 0.3);
+}
+
+.statistics-v4-btn-report {
+    background: rgba(255, 0, 255, 0.03);
+    color: #ffffff;
+    font-family: 'Azeret Mono', monospace;
+    font-weight: 600;
+    font-size: 12px;
+    padding: 0.95rem 2rem;
+    border: 1px solid rgba(255, 0, 255, 0.4);
+    border-radius: 2px;
+    cursor: pointer;
+    letter-spacing: 0.12em;
+    transition: all 0.3s ease;
+}
+
+.statistics-v4-btn-report:hover {
+    background: rgba(255, 0, 255, 0.15);
+    border-color: #ff00ff;
+    box-shadow: 0 0 20px rgba(255, 0, 255, 0.25);
+    color: #ff00ff;
+}

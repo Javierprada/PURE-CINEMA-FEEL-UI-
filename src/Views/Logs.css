@@ -1,0 +1,203 @@
+
+
+.logs-v5-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 1;
+}
+
+/* Header de la consola */
+.logs-v5-header {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    gap: 0.3rem;
+    
+}
+
+.logs-v5-title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logs-v5-header-icon {
+    color: #ff00ff;
+    text-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+    font-size: 1.8rem !important;
+}
+
+.logs-v5-section-title {
+    font-family: 'Azeret Mono', monospace;
+    font-size: 1.3rem;
+    letter-spacing: 0.15em;
+    color: #ffffff;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+.logs-v5-section-subtitle {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+    margin: 0;
+}
+
+/* Espacio de trabajo de la terminal */
+.logs-v5-workspace {
+    display: flex;
+    gap: 1rem;
+    background: rgba(10, 10, 10, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    padding: 1.5rem;
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Efecto de línea de escaneo (Scanline) */
+.logs-v5-workspace::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    background-size: 100% 4px, 3px 100%;
+    pointer-events: none;
+    z-index: 5;
+}
+
+/* Lista de Logs */
+.logs-v5-list {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Línea de entrada individual */
+.logs-v5-entry {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background: rgba(255, 255, 255, 0.02);
+    font-family: 'Azeret Mono', monospace;
+    font-size: 0.8rem;
+    border-left: 3px solid transparent;
+    transition: all 0.2s ease;
+    clip-path: polygon(0 0, 99% 0, 100% 15%, 100% 100%, 1% 100%, 0 85%);
+}
+
+.logs-v5-entry:hover {
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateX(5px);
+}
+
+/* Variantes de estado */
+.logs-v5-status-success { border-left-color: #00fbfb; }
+.logs-v5-status-warning { border-left-color: #bfd043; }
+.logs-v5-status-critical { border-left-color: #ff00ff; background: rgba(255, 0, 255, 0.05); }
+
+/* Contenido de la línea */
+.logs-v5-entry-content {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.logs-v5-entry-prefix { color: #555; }
+.logs-v5-time { color: #ff00ff; opacity: 0.8; }
+.logs-v5-node { color: #fff; font-weight: bold; }
+.logs-v5-event { color: rgba(255, 255, 255, 0.8); }
+
+/* Botón interactivo de la línea */
+.logs-v5-action-btn {
+    background: transparent;
+    border: none;
+    color: #00fbfb;
+    font-family: 'Azeret Mono', monospace;
+    font-size: 0.7rem;
+    cursor: pointer;
+    opacity: 0.4;
+    transition: all 0.3s ease;
+    text-shadow: 0 0 5px rgba(0, 251, 251, 0.5);
+}
+
+.logs-v5-entry:hover .logs-v5-action-btn {
+    opacity: 1;
+    letter-spacing: 1px;
+}
+
+/* Cursor de terminal */
+.logs-v5-terminal-cursor {
+    margin-top: 10px;
+    padding-left: 15px;
+    color: #00fbfb;
+    font-weight: bold;
+    animation: logs-v5-blink 1s infinite;
+}
+
+@keyframes logs-v5-blink {
+    50% { opacity: 0; }
+}
+
+/* Cascada de datos decorativa lateral */
+.logs-v5-decoration {
+    width: 200px;
+    border-left: 1px solid rgba(255, 255, 255, 0.05);
+    padding-left: 15px;
+    opacity: 0.2;
+}
+
+.logs-v5-code-stream {
+    font-family: 'Azeret Mono', monospace;
+    font-size: 0.6rem;
+    color: #00fbfb;
+    line-height: 1.8;
+    user-select: none;
+}
+
+/* Footer de la terminal */
+.logs-v5-footer {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 10px;
+}
+
+.logs-v5-status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Azeret Mono', monospace;
+    font-size: 0.7rem;
+    color: #00fbfb;
+}
+
+.logs-v5-pulse-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #00fbfb;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #00fbfb;
+    animation: logs-v5-pulse 1.5s infinite;
+}
+
+@keyframes logs-v5-pulse {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(2.5); opacity: 0; }
+}
+
+.logs-v5-footer-meta {
+    font-size: 0.6rem;
+    color: rgba(255, 255, 255, 0.2);
+    font-family: 'Azeret Mono', monospace;
+}

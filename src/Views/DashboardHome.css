@@ -1,0 +1,151 @@
+/* CONTENEDOR PRINCIPAL INTERNO DEL MAIN */
+/* ENCABEZADO DE SECCIÓN */
+.admin-v4-section-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+    text-align: left;
+    position: relative;
+}
+
+
+
+.dashboard-v4-home-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    box-sizing: border-box;
+    
+    
+}
+
+
+
+.admin-v4-indicator-bar {
+    width: 60px;
+    height: 4px;
+    background-color:#00ffff; /* Cambiado a magenta para hacer juego con tu barra superior */
+    box-shadow: 0 0 12px #ff00ff;
+}
+
+
+.section-title::before {
+    content: '';
+    background-color: #00ffff;
+    box-shadow: 0 0 12px #ff00ff;
+}
+
+.section-title {
+    font-family: 'Azeret Mono', monospace, sans-serif;
+    font-size: 1.5rem;
+    letter-spacing: 0.2em;
+    color: #fff;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+.section-subtitle {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    margin-left: 50px;
+    text-transform: uppercase;
+}
+
+/* GRID DE LAS TARJETAS KPI (Ahora solo agrupa los 3 paneles) */
+.kpi-v4-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    width: 100%;
+}
+
+/* TARJETA DE CRISTAL BASE */
+.admin-v4-glass-card {
+    background: rgba(20, 20, 20, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 4px;
+    padding: 1.75rem;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 160px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+/* Variantes de bordes iluminados */
+.cyan-border { border-left: 4px solid #00fbfb; }
+.magenta-border { border-left: 4px solid #ff00ff; }
+.yellow-border { border-left: 4px solid #bfd043; }
+
+/* ELEMENTOS INTERNOS DE LA TARJETA */
+.card-v4-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-v4-label {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: bold;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+}
+
+.card-v4-icon {
+    font-size: 1.8rem !important;
+}
+
+.card-v4-value {
+    font-family: 'Azeret Mono', monospace;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 1rem 0;
+    color: #fff;
+    line-height: 1;
+}
+
+.card-v4-footer {
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+/* CLASES DE COLORES */
+.cyan-text { color: #00fbfb; text-shadow: 0 0 8px rgba(0, 251, 251, 0.3); }
+.magenta-text { color: #ff00ff; text-shadow: 0 0 8px rgba(255, 0, 255, 0.3); }
+.yellow-text { color: #bfd043; text-shadow: 0 0 8px rgba(191, 208, 67, 0.3); }
+
+/* BARRA DE PROGRESO DE ALMACENAMIENTO */
+.storage-v4-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    margin: 0.5rem 0 1rem 0;
+}
+
+.storage-v4-fill {
+    height: 100%;
+    background: #00fbfb;
+    box-shadow: 0 0 8px #00fbfb;
+    border-radius: 3px;
+    width: 42%;
+}
+
+/* TERMINAL DE LOGS */
+.terminal-v4-logs {
+    font-family: 'Azeret Mono', monospace;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 2;
+}

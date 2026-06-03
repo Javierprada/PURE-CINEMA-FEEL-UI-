@@ -1,0 +1,448 @@
+
+
+:root {
+    --plans-bg-void: #0a0a0a;
+    --plans-bg-surface: #121414;
+    --plans-fuchsia: #ff00ff;
+    --plans-cyan: #00ffff;
+    --plans-text: #e2e2e2;
+    --plans-text-muted: rgba(226, 226, 226, 0.6);
+}
+
+/* Contenedor General de la Vista */
+.plans-v3-screen-wrapper {
+    margin: 0;
+    padding: 0;
+    background: var(--plans-bg-void);
+    color: var(--plans-text);
+    font-family: 'Montserrat', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Header Navbar */
+.plans-v3-header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 50;
+    background: rgba(18, 20, 20, 0.8);
+    backdrop-filter: blur(20px);
+    border-b: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 30px rgba(0,0,0,0.5);
+}
+
+.plans-v3-navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 48px;
+    max-width: 1440px;
+    margin: 0 auto;
+}
+
+.plans-v3-brand {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 24px;
+    font-weight: 900;
+    color: var(--plans-fuchsia);
+    text-shadow: 0 0 8px rgba(255, 0, 255, 0.8);
+    animation: titleParpadeo 3s linear infinite;
+}
+
+
+@keyframes titleParpadeo {
+  0%, 18%, 22%, 53%, 57%, 100% {
+    filter: drop-shadow(0 0 2px #ff2bff);
+    opacity: 1;
+  }
+  20%, 24%, 55% {
+    filter: drop-shadow(0 0 15px #ff2bff);
+    opacity: 0.5;
+  }
+}
+
+
+
+.plans-v3-nav-links {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+}
+
+.plans-v3-nav-link {
+    color: var(--plans-text-muted);
+    text-decoration: none;
+    transition: color 0.3s;
+    font-size: 16px;
+}
+
+.plans-v3-nav-link:hover {
+    color: var(--plans-text);
+}
+
+.plans-v3-nav-link.active {
+    color: var(--plans-cyan);
+    border-bottom: 2px solid var(--plans-cyan);
+    padding-bottom: 4px;
+}
+
+.plans-v3-nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.plans-v3-icon-btn {
+    background: none;
+    border: none;
+    color: var(--plans-text);
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.plans-v3-icon-btn:hover {
+    color: var(--plans-fuchsia);
+    
+}
+
+.plans-v3-btn-start {
+    background: var(--plans-fuchsia);
+    color: #000;
+    padding: 8px 24px;
+    border-radius: 8px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+
+.plans-v3-btn-start:hover {
+    box-shadow: 0 0 40px rgba(0, 225, 255, 0.886);
+}
+
+
+.plans-v3-btn-start:active {
+    transform: scale(0.95);
+}
+
+/* Fondo de Partículas */
+.plans-v3-canvas-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background: radial-gradient(circle at center, #121414 0%, #0a0a0a 100%);
+    pointer-events: none;
+}
+
+.plans-v3-particle {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(1px);
+    opacity: 0.3;
+    animation: plans-v3-float linear infinite;
+}
+
+@keyframes plans-v3-float {
+    0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+    50% { opacity: 0.6; }
+    100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+}
+
+/* Área de Contenido Principal */
+.plans-v3-main {
+    position: relative;
+    z-index: 2;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 128px 48px 64px 48px;
+}
+
+.plans-v3-container {
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+}
+
+.plans-v3-text-center {
+    text-align: center;
+    margin-bottom: 64px;
+}
+
+.plans-v3-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 48px;
+    font-weight: 900;
+    margin-bottom: 16px;
+    letter-spacing: -0.02em;
+    background: linear-gradient(to right, var(--plans-fuchsia), var(--plans-cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: mainParpadeo 3s linear infinite;
+}
+
+
+@keyframes mainParpadeo {
+  0%, 18%, 22%, 53%, 57%, 100% {
+    filter: drop-shadow(0 0 2px #ff2bff);
+    opacity: 1;
+  }
+  20%, 24%, 55% {
+    filter: drop-shadow(0 0 15px #ff2bff);
+    opacity: 0.5;
+  }
+}
+
+
+
+.plans-v3-subtitle {
+    color: var(--plans-text-muted);
+    font-size: 16px;
+    max-width: 650px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* Grid de Tarjetas */
+.plans-v3-grid {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    
+}
+
+/* Glassmorphism Cards */
+.plans-v3-glass-card {
+    background: rgba(26, 26, 26, 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+    min-height: 480px;
+}
+
+.plans-v3-glass-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--plans-cyan);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+}
+
+/* Estado Tarjeta Recomendada ("The Cinephile") */
+.plans-v3-glass-card.plans-v3-recommended {
+    border: 2px solid var(--plans-cyan);
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.15);
+    transform: scale(1.03);
+}
+.plans-v3-glass-card.plans-v3-recommended:hover {
+    transform: scale(1.05) translateY(-5px);
+    box-shadow: 0 0 35px rgba(0, 255, 255, 0.3);
+}
+
+/* Estado Tarjeta Seleccionada (Activa) */
+.plans-v3-glass-card.plans-v3-active {
+    border: 2px solid var(--plans-fuchsia);
+    box-shadow: 0 0 30px rgba(255, 0, 255, 0.3);
+}
+
+/* Lista de Características */
+.plans-v3-features-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 32px 0;
+    flex-grow: 1;
+}
+
+.plans-v3-feature-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    font-size: 14px;
+}
+
+.plans-v3-feature-item.disabled {
+    color: rgba(226, 226, 226, 0.3);
+}
+
+.plans-v3-feature-item .material-symbols-outlined {
+    font-size: 20px;
+}
+
+.plans-v3-fuchsia-icon { color: var(--plans-fuchsia); }
+.plans-v3-cyan-icon { color: var(--plans-cyan); }
+
+/* Detalles de Precio */
+.plans-v3-card-header {
+    margin-bottom: 32px;
+}
+
+.plans-v3-card-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 8px 0;
+}
+
+.plans-v3-price-block {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+}
+
+.plans-v3-price {
+    font-size: 32px;
+    font-weight: 900;
+    color: #fff;
+}
+
+/* El Botón Central Perfecto Integrado */
+.plans-v3-btn-execute {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    white-space: nowrap;
+    
+    width: 100%;
+    background: linear-gradient(90deg, var(--plans-fuchsia), var(--plans-cyan));
+    padding: 16px;
+    border: none;
+    border-radius: 8px;
+    color: #000;
+    font-weight: 800;
+    font-size: 14px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: transform 0.1s ease, box-shadow 0.3s ease;
+    box-shadow: 0 0 15px rgba(255, 0, 255, 0.3);
+    position: relative;
+    z-index: 1;
+}
+
+.plans-v3-btn-execute:hover {
+    box-shadow: 0 0 25px rgba(255, 0, 255, 0.6);
+    transform: translateY(-2px);
+}
+
+.plans-v3-btn-execute:active {
+    transform: translateY(1px);
+}
+
+/* Badge Superior para Recomendados */
+.plans-v3-badge {
+    background: var(--plans-cyan);
+    color: #000;
+    font-weight: 900;
+    font-size: 10px;
+    padding: 4px 12px;
+    border-radius: 0 0 4px 4px;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    letter-spacing: 1px;
+}
+
+/* Gradiente de Texto */
+.plans-v3-text-gradient {
+    font-family: 'Orbitron', sans-serif;
+    background: linear-gradient(to right, var(--plans-fuchsia), var(--plans-cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: footerParpadeo 3s linear infinite;
+    
+}
+
+@keyframes footerParpadeo {
+    0%, 10%, 20%, 30%, 40%, 50%, 70%, 100%{
+        filter: drop-shadow(0 0 12px #00ffff);
+        opacity: 1;
+    }
+
+    5%, 15%, 25%, 35%, 45%, 55%, 75%, 100% {
+        filter: drop-shadow(0 0 12px #ff2bff);
+    }
+    
+    
+}
+
+
+
+
+
+
+/* Footer */
+.plans-v3-footer {
+    width: 100%;
+    background: var(--plans-bg-void);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    position: relative;
+    z-index: 2;
+}
+
+.plans-v3-footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 48px 48px;
+    max-width: 1440px;
+    margin: 0 auto;
+}
+
+.plans-v3-footer-links {
+    display: flex;
+    gap: 32px;
+}
+
+.plans-v3-footer-link {
+    color: rgba(142, 145, 146, 1);
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.2s;
+}
+
+.plans-v3-footer-link:hover {
+    color: var(--plans-cyan);
+}
+
+/* Media Queries Responsivo */
+@media (max-width: 968px) {
+    .plans-v3-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+    .plans-v3-navbar, .plans-v3-footer-content {
+        flex-direction: column;
+        gap: 24px;
+        text-align: center;
+    }
+    .plans-v3-glass-card.plans-v3-recommended {
+        transform: scale(1);
+    }
+    .plans-v3-glass-card.plans-v3-recommended:hover {
+        transform: translateY(-5px);
+    }
+}
