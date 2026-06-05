@@ -167,8 +167,8 @@
 }
 
 .admin-v4-avatar-wrapper {
-    width: 40px;
-    height: 40px;
+    width: 35px;
+    height: 35px;
     border-radius: 50%;
     border: 1px solid var(--neon-fuchsia);
     overflow: hidden;
@@ -190,6 +190,28 @@
     
 }
 
+.tv-power-btn {
+  background: #121214;
+  border: 1px solid #ff007f; /* Rosa neón */
+  color: #ff007f;
+  border-radius: 50%; /* Redondito como botón físico */
+  width: 25px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 8px rgba(255, 0, 127, 0.4);
+}
+
+/* Efecto cuando pasa el mouse (Como si encendiera el led) */
+.tv-power-btn:hover {
+  background: #ff007f;
+  color: #fff;
+  box-shadow: 0 0 15px #ff007f, 0 0 30px #ff007f;
+  transform: scale(1.05);
+}
 
 
 

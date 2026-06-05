@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Navigate } from 'react-router-dom'
 
 import './adminDash.css';
 import MovieLibrary from './movieLibrary';
@@ -20,11 +21,24 @@ const AdminDashb = () => {
     //2. NUEVO ESTADO: Controla el modal.   
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
     
+    
     const handleOpenPopover = () => setIsPopoverOpen (true);
     const handleClosePopover = () => setIsPopoverOpen (false);
 
     //3.
     const [isScanningGallery, setIsScanningGallery] = useState(false);
+    
+    
+
+
+    const handleLogout = (e) => {
+        e.stopPropagation(); // Evitamos que el click se propague a la tarjeta del operador y abra el popover
+        localStorage.removeItem('userSession');
+        setIsLoggedIn(false); // Cambia el estado para provocar la redirección.
+
+       
+    };
+
     
     
 
@@ -61,6 +75,20 @@ const AdminDashb = () => {
     useEffect(() => {
         console.log('%c PURE CINEMA FEEL: COMMAND CENTER ACTIVE ', 'background: #ff00ff; color: #000; font-weight: bold;');
     }, []);
+
+
+    const [isLoggedIn, setIsLoggedIn] = useState(()=> {
+        return localStorage.getItem('userSession') !== null;
+
+        
+
+    });
+
+    if (!isLoggedIn) {
+        return <Navigate to='/authV2' replace={true}/>;
+    }
+
+
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -100,18 +128,20 @@ const AdminDashb = () => {
                 {/*NAVBAR MODIFICADA: Ahora usan botones/onClick para cambiar de pantalla*/}
                 <nav className="admin-v4-nav">
                     <button
+                        type='button'
                         onClick={()=> setActiveSection('dashboard')}
                         className={`admin-v4-nav-item ${activeSection === 'dashboard' ? 'active' : ''}`}
-                        style={{background: 'transparent', border: 'none', width:'100%', textLeft: 'left', cursor: 'pointer' }}
+                        style={{background: 'transparent', border: 'none', width:'100%', textAlign: 'left', cursor: 'pointer' }}
                     >
                         <span className="material-symbols-outlined" style={{ marginRight: '1rem' }}>dashboard</span>
                         DASHBOARD
                     </button>
 
                     <button 
+                        type='button'
                         onClick={()=> setActiveSection('injection')}
                         className={`admin-v4-nav-item ${activeSection === 'injection' ? 'active' : ''}` }
-                        style={{ background: 'transparent', border: 'none', width: '100%', textLeft: 'left', cursor: 'pointer' }}
+                        style={{ background: 'transparent', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer' }}
 
                     >
                         <span className="material-symbols-outlined" style={{ marginRight: '1rem' }}>cloud_upload</span>
@@ -119,19 +149,20 @@ const AdminDashb = () => {
                     </button>
 
                     <button 
+                        type='button'
                         onClick={()=> setActiveSection('library')}
-                            
                         className={`admin-v4-nav-item ${activeSection === 'library' ? 'active' : ''}`}
-                        style={{ background: 'transparent', border: 'none', width: '100%', textLeft: 'left', cursor: 'pointer' }}
+                        style={{ background: 'transparent', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer' }}
                     >
                         <span className="material-symbols-outlined" style={{ marginRight: '1rem' }}>movie</span>
                         BIBLIOTECA RAW
                     </button>
 
                     <button 
+                        type='button'
                         onClick={()=> setActiveSection('stats')}
                         className={`admin-v4-nav-item ${activeSection === 'stats' ? 'active' : ''}`}
-                        style={{ background: 'transparent', border: 'none', width: '100%', textLeft: 'left', cursor: 'pointer' }}
+                        style={{ background: 'transparent', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer' }}
                     
                     >
                         <span className="material-symbols-outlined" style={{ marginRight: '1rem' }}>analytics</span>
@@ -139,9 +170,10 @@ const AdminDashb = () => {
                     </button>
 
                     <button
+                        type='button'
                         onClick={()=> setActiveSection('logs')}
                         className={`admin-v4-nav-item ${activeSection === 'logs' ? 'active' : ''}`}
-                        style={{ background: 'transparent', border: 'none', width: '100%', textLeft: 'left', cursor: 'pointer' }}
+                        style={{ background: 'transparent', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer' }}
                     >
                         <span className="material-symbols-outlined" style={{ marginRight: '1rem' }}>terminal</span>
                         LOGS DE SISTEMA
@@ -163,6 +195,15 @@ const AdminDashb = () => {
                             <p style={{ fontSize: '10px', color: '#00fbfb', margin: 0, fontWeight: 'bold' }}>ADMIN: JOSETH PRADA</p>
                             <p style={{ fontSize: '8px', color: '#dcbed4', margin: 0, letterSpacing: '0.05em' }}>NIVEL DE ACCESO: ABSOLUTO 🔐</p>
                         </div>
+
+                        {/* Botón de Apagado TV */}
+                        <button 
+                            type='button'
+                            className="tv-power-btn"  title="Cerrar Sesión" onClick={handleLogout}
+                            >
+                            <span className="nav-icon">power_settings_new</span>
+                        </button>
+
                     </div>
                 </div>
             </aside>
@@ -182,6 +223,7 @@ const AdminDashb = () => {
 
                     <div>
                         <button 
+                            type='button'
                             onClick={handleInspectGallery}
                             disabled={isScanningGallery}
                             className={`admin-v4-btn-preview ${isScanningGallery ? 'gallery-internal-btn-inspect' : ''} `}

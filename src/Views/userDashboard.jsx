@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
+import {Navigate} from 'react-router-dom';
 import './UserDashboard.css';
+
+
+
+
+
 
 // Caratulas películas añadidas recientemente.
 const INITIAL_MOVIES = [
@@ -11,6 +17,9 @@ const INITIAL_MOVIES = [
 ];
 
 export default function UserDashboard() {
+
+
+
   const [activeTab, setActiveTab] = useState('home');
   const [searchQuery, setSearchQuery] = useState('');
   const [playlist, setPlaylist] = useState([INITIAL_MOVIES[1]]); // Películas marcadas como favoritas
@@ -24,6 +33,23 @@ export default function UserDashboard() {
       setPlaylist([...playlist, movie]);
     }
   };
+
+
+    // Lógica de cierre de sesión.
+  const [shouldRedirect, setShoulRedirect] = useState (false);
+  const handleLogout = () => {
+    localStorage.removeItem('userSession');
+    setShoulRedirect(true);
+  };
+
+
+  // Guardian declarativo de expulsión.
+  // Si esta activo, interrumpe el renderizado y saca al usuario inmediatamente.
+  if (shouldRedirect) {
+    return <Navigate to='/authV2' replace={true}/>;
+  }
+
+
 
   return (
     <div className="user-dashboard-root">
@@ -68,7 +94,7 @@ export default function UserDashboard() {
         </nav>
 
         <div className="logout-area">
-          <button className="logout-button-action">
+          <button className="logout-button-action" onClick={handleLogout}>
             <span className="nav-icon">logout</span>Cerrar sesión
           </button>
         </div>
