@@ -26,6 +26,7 @@ const CSSParticles = () => {
 
 const AuthPortal = () => {
     const [view, setView] = useState('login');
+    
 
     // NUEVOS ESTADOS DE CONTROL Y AUTENTICACIÓN
     const [correo_electronico, setCorreo_electronico] = useState('');
@@ -47,7 +48,7 @@ const AuthPortal = () => {
     const [nombres, setNombres] = useState('');
     const [apellidos, setApellidos] = useState('');
     const [successMessage, setSuccessMessage] = useState ('');
-
+    const [newPassword, setNewPassword] = useState ('');
 
 
 
@@ -125,7 +126,8 @@ const AuthPortal = () => {
                 nombres: nombres,
                 apellidos: apellidos,
                 correo_electronico: correo_electronico,
-                password: password
+                password: password,
+
                 // Nota: No enviamos 'rol' para que por defecto el servidor asigne 'user' por seguridad.
             });
 
@@ -169,6 +171,30 @@ const AuthPortal = () => {
     
 
 
+    const handleRecoverSubmit = (e) => {
+        e.preventDefault();
+        toggleView('resetPassword'); // Aqui creamos la vista alternativa.
+    };
+
+
+    const handlePasswordResetSubmit = (e) => {
+        e.preventDefault();
+
+        if (newPassword !== password) {
+            setErrorMessage("Las contraseñas no coinciden ciberneticamente.");
+            return;
+        }
+
+        // Aqui se mete la petición Axios para actualizar la contraseña en el backend
+        setSuccessMessage("Contraseña restablecida con ÉXITO 🔧");
+        setNewPassword('');
+        setPassword('');
+        setTimeout(()=> toggleView('login'), 2000);
+
+    };
+
+
+
 
     const renderHeader = () => (
         <div className="auth-v2-header">
@@ -184,6 +210,12 @@ const AuthPortal = () => {
             </h1>
         </div>
     );
+
+
+
+
+   
+
 
 
 
@@ -353,7 +385,7 @@ const AuthPortal = () => {
     );
 
     const renderRecover = () => (
-        <div className="auth-v2-form-wrapper">
+        <form onSubmit={handleRecoverSubmit} className="auth-v2-form-wrapper">
             <h2 className="auth-v2-title">
                 RESTABLECER ACCESO
             </h2>
@@ -366,25 +398,99 @@ const AuthPortal = () => {
                     <input 
                         type="email" 
                         placeholder="Email de recuperación"
+                        value={correo_electronico}
+                        onChange={(e)=> setCorreo_electronico(e.target.value)}
                         className="auth-v2-input-field auth-v2-input-glow"
+                        disabled={isLoading}
+                        required
                     />
                 </div>
             </div>
-            <button className="auth-v2-btn-execute auth-v2-btn-flicker">
+            <button
+                type='submit'
+                
+                className="auth-v2-btn-execute auth-v2-btn-flicker"
+                
+            >
                 ENVIAR TOKEN DE ACCESO
             </button>
             <div className="auth-v2-links-container">
                 <button 
                     type="button"
-                    onClick={() => toggleView('login')}
+                    onClick={() => toggleView('login')} // Devuelta al login.
                     className="auth-v2-link-btn flex-center"
+                    
                 >
                     <span className="material-symbols-outlined text-icon-sm">arrow_back</span>
                     Volver al inicio de sesión
                 </button>
             </div>
-        </div>
+        </form>
     );
+
+
+
+
+    const PasswordResetForm = () => (
+        
+            <form  onSubmit={handlePasswordResetSubmit} className="auth-v2-form-wrapper" >
+                <h2 className="auth-v2-title">CAMBIAR CONTRASEÑA 🔐</h2>
+
+                {errorMessage && (
+                    <div className='auth-v2-error-alert' style={{color: '#ff00ff', fontSize: '0.75rem', marginBottom: '1rem', fontFamily: 'monospace', textTransform: 'uppercase'}} >
+                        ⚠️ {errorMessage}
+                    </div>
+                )}
+
+                {successMessage && (
+                    <div className='auth-v2-success-alert' style={{color: '#00ffff', fontSize: '0.75rem', marginBottom: '1rem', fontFamily: 'monospace', textTransform: 'uppercase'}} >
+                        ✨ {successMessage}
+                    </div>
+                )}
+
+                <div className="auth-v2-input-group">
+                    <div className="auth-v2-input-relative">
+                        <span className="material-symbols-outlined auth-v2-icon">lock</span>
+                        <input 
+                            type="password" 
+                            placeholder="Digite su nueva contraseña"
+                            className="auth-v2-input-field auth-v2-input-glow"
+                            value={newPassword}
+                            onChange={(e)=> setNewPassword(e.target.value)}
+                            disabled={isLoading}
+                            required
+                        >
+                        </input>
+                    </div>
+                    <div className="auth-v2-input-relative">
+                        <span className="material-symbols-outlined auth-v2-icon">lock</span>
+                        <input 
+                            type="password" 
+                            placeholder="Confirme su contraseña"
+                            className="auth-v2-input-field auth-v2-input-glow"
+                            value={password}
+                            onChange={(e)=> setPassword(e.target.value)}
+                            disabled={isLoading}
+                            required
+                        >
+                        </input>    
+                    </div>
+                </div>
+                <button 
+                    type='submit'
+                    className="auth-v2-btn-execute auth-v2-btn-flicker" disabled={isLoading}
+                    
+                
+                >
+                    CONFIRMAR NUEVA CONTRASEÑA
+                </button>
+            </form>
+    );
+    
+
+
+
+
 
 
 
@@ -407,6 +513,7 @@ const AuthPortal = () => {
                     {view === 'login' && renderLogin()}
                     {view === 'register' && renderRegister()}
                     {view === 'recover' && renderRecover()}
+                    {view === 'resetPassword' && PasswordResetForm()}
                 </div>
             </div>
         </div>
