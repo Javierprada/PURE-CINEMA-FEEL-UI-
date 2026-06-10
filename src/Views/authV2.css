@@ -290,6 +290,7 @@
     background: none;
     border: none;
     color: var(--auth-v2-text-muted);
+    
     font-size: 14px;
     font-family: 'Montserrat', sans-serif;
     cursor: pointer;
@@ -298,6 +299,7 @@
 
 .auth-v2-link-btn:hover {
     color: var(--auth-v2-cyan);
+    text-shadow: 0 0 8px var(--auth-v2-cyan), 0 0 15px var(--auth-v2-cyan);
 }
 
 .auth-v2-text-muted {
@@ -316,6 +318,7 @@
 
 .auth-v2-link-btn-highlight:hover {
     text-decoration: underline;
+    
 }
 
 .auth-v2-link-btn-cyan {

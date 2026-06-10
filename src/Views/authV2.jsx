@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useSearchParams } from 'react-router-dom';
 import './authV2.css';
 
 
 
-const CSSParticles = () => {
+ const CSSParticles = () => {
     return (
         <div className="auth-v2-particles">
             <div className="auth-v2-particle"></div>
@@ -24,8 +24,11 @@ const CSSParticles = () => {
 
 
 
+
 const AuthPortal = () => {
     const [view, setView] = useState('login');
+    // 2. Instancia el hook de React Router para leer parámetros
+    const [searchParams] = useSearchParams();
     
 
     // NUEVOS ESTADOS DE CONTROL Y AUTENTICACIÓN
@@ -49,8 +52,21 @@ const AuthPortal = () => {
     const [apellidos, setApellidos] = useState('');
     const [successMessage, setSuccessMessage] = useState ('');
     const [newPassword, setNewPassword] = useState ('');
+    
 
+    useEffect(()=> {
+        // Revisamos si la URL del browser trae un token
+        
+        const tokenDetectado = searchParams.get('token');
+        console.log("👀 AuthPortal Montado. ¿Hay token en la URL?:", tokenDetectado);
 
+        if (tokenDetectado){
+            console.log("🎯 Token ciber-detectado en la URL:", tokenDetectado);
+            setIsLoading(false);
+            setErrorMessage('')
+            setView('resetPassword'); // Forzamos a que muestre la pantalla de cambiar contraseña.
+        }
+    },[searchParams]); // Los corchetes vacíos aseguran que solo corra una vez al cargar la página
 
 
 
@@ -170,16 +186,37 @@ const AuthPortal = () => {
 
     
 
-
-    const handleRecoverSubmit = (e) => {
+    // Función del boton "Enviar token de restablecimiento"
+    const handleRecoverSubmit = async (e) => {
         e.preventDefault();
-        toggleView('resetPassword'); // Aqui creamos la vista alternativa.
+        
+
+        try {
+            // Petición al backend
+            const response = await axios.post('http://localhost:8080/api/auth/forgot-password', {
+                correo_electronico: correo_electronico
+            });
+
+            if (response.data && response.data.success){
+                console.log("Token generado en el servidor con éxito 📬")
+                toggleView('checkEmail'); // Aqui creamos la vista alternativa.
+            }
+
+            console.log("Contraseña actualizada con ÉXITO 🔒");
+        }catch (error){
+            console.error("Error al solicitar el token", error);
+
+            // Manejo de errores por si el correo ingresado no existe o el servidor esta caído.
+            const mensajeError = error.response?.data?.message || "Hubo un error de conexión con el backend.";
+            alert(mensajeError);
+        }
+
     };
 
 
     const handlePasswordResetSubmit = (e) => {
         e.preventDefault();
-
+        
         if (newPassword !== password) {
             setErrorMessage("Las contraseñas no coinciden ciberneticamente.");
             return;
@@ -189,7 +226,7 @@ const AuthPortal = () => {
         setSuccessMessage("Contraseña restablecida con ÉXITO 🔧");
         setNewPassword('');
         setPassword('');
-        setTimeout(()=> toggleView('login'), 2000);
+        setTimeout(()=> toggleView('login'), 2000); // De vuelta al login.
 
     };
 
@@ -384,6 +421,8 @@ const AuthPortal = () => {
         </form>
     );
 
+
+
     const renderRecover = () => (
         <form onSubmit={handleRecoverSubmit} className="auth-v2-form-wrapper">
             <h2 className="auth-v2-title">
@@ -416,7 +455,7 @@ const AuthPortal = () => {
             </button>
             <div className="auth-v2-links-container">
                 <button 
-                    type="button"
+                    type="submit"
                     onClick={() => toggleView('login')} // Devuelta al login.
                     className="auth-v2-link-btn flex-center"
                     
@@ -431,7 +470,42 @@ const AuthPortal = () => {
 
 
 
+
+    //Estado de la nueva vista informativa. ChekEmail.
+    const renderCheckEmail = () => (
+        <div className="auth-v2-form-wrapper" >
+            <h2 className="auth-v2-title" >
+                CORREO ENVIADO 📬
+            </h2>
+            <p className="auth-v2-description" >
+                Si el correo existe en nuestra base de datos, se enviará un link de restablecimiento al correo ingresado. <br/>Por favor, revisa tu bandeja de entrada.
+            </p>
+            {/* Espaciador estético cyberpunk */}
+            <div style={{ margin: '30px 0' }} className="auth-v2-input-glow"></div>
+
+            <div className="auth-v2-links-container" >
+                <button
+                    type='button'
+                    onClick={()=> toggleView('login')} // Lo regresa limpio al login.
+                    className="auth-v2-link-btn flex-center"
+                >
+                    <span className="material-symbols-outlined text-icon-sm" >arrow_back</span>
+                    Volver al inicio de sesión
+                </button>
+
+            </div>
+
+        </div>
+    );
+
+
+
+
+
+
+
     const PasswordResetForm = () => (
+        
         
             <form  onSubmit={handlePasswordResetSubmit} className="auth-v2-form-wrapper" >
                 <h2 className="auth-v2-title">CAMBIAR CONTRASEÑA 🔐</h2>
@@ -513,7 +587,8 @@ const AuthPortal = () => {
                     {view === 'login' && renderLogin()}
                     {view === 'register' && renderRegister()}
                     {view === 'recover' && renderRecover()}
-                    {view === 'resetPassword' && PasswordResetForm()}
+                    {view === 'checkEmail' && renderCheckEmail()}
+                    {view === 'resetPassword' && <PasswordResetForm/>}
                 </div>
             </div>
         </div>

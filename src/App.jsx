@@ -27,6 +27,7 @@ import GaleriaInterna from './Views/GaleriaInterna';
 
 
 
+
 function App() {
   return(
    
@@ -44,6 +45,7 @@ function App() {
             <Route path='/logs' element={<Logs/>} ></Route>
             <Route path='/popoverAdmin' element={<PopoverAdmin/>} ></Route>
             <Route path='/inspeccion-galleria' element={<GaleriaInterna/>} ></Route>
+            
           </Routes>
       
 
