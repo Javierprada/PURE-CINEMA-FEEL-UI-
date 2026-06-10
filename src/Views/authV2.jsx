@@ -29,13 +29,14 @@ const AuthPortal = () => {
     const [view, setView] = useState('login');
     // 2. Instancia el hook de React Router para leer parámetros
     const [searchParams] = useSearchParams();
+    const [isTokenInvalid, setIsTokenInvalid] = useState(false);
     
 
     // NUEVOS ESTADOS DE CONTROL Y AUTENTICACIÓN
     const [correo_electronico, setCorreo_electronico] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    const [isLoading, setIsLoading] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     const [userRol, setUserRol] = useState(null);
     
     
@@ -61,12 +62,27 @@ const AuthPortal = () => {
         console.log("👀 AuthPortal Montado. ¿Hay token en la URL?:", tokenDetectado);
 
         if (tokenDetectado){
-            console.log("🎯 Token ciber-detectado en la URL:", tokenDetectado);
-            setIsLoading(false);
-            setErrorMessage('')
-            setView('resetPassword'); // Forzamos a que muestre la pantalla de cambiar contraseña.
+            setIsLoading(true);
+
+            // Hacemos una petición rápida al backend para verificar la salud del token
+            axios.post('http://localhost:8080/api/auth/validate-token', {token: tokenDetectado})
+                .then((response)=> {
+                    if (response.data.success) {
+                        console.log("🎯 Token verificado en BD con éxito. Mostrando formulario.");
+                        setIsTokenInvalid(false);
+                        setView('resetPassword'); // Como el token esta vivo abrimos el formulario correspondiente.
+                    }
+                })
+                .catch ((error) => {
+                    console.log("❌ El token de la URL ya no es válido en la BD:", error);
+                    setIsTokenInvalid(true); // 🛑 Activamos bandera de error.
+                    setView('expired');     // Redirigimos a la vista de expirado.
+                })
+                .finally(()=> {
+                    setIsLoading(false);
+                })
         }
-    },[searchParams]); // Los corchetes vacíos aseguran que solo corra una vez al cargar la página
+    },[searchParams]); 
 
 
 
@@ -214,7 +230,7 @@ const AuthPortal = () => {
     };
 
 
-    const handlePasswordResetSubmit = (e) => {
+    const handlePasswordResetSubmit = async (e) => {
         e.preventDefault();
         
         if (newPassword !== password) {
@@ -222,11 +238,46 @@ const AuthPortal = () => {
             return;
         }
 
-        // Aqui se mete la petición Axios para actualizar la contraseña en el backend
-        setSuccessMessage("Contraseña restablecida con ÉXITO 🔧");
-        setNewPassword('');
-        setPassword('');
-        setTimeout(()=> toggleView('login'), 2000); // De vuelta al login.
+       
+        
+
+        // Extraemos el token de la URL
+        const tokenReal = searchParams.get('token');
+        console.log("🚀 Despachando actualización de contraseña al Backend...", {tokenReal, password});
+
+        try {
+            const response = await axios.post('http://localhost:8080/api/auth/reset-password', {
+                token: tokenReal,   //Enviamos el token para que el servidor busque el usuario.
+                nuevaContraseña: password // Enviamos la nueva contraseña(usando el estado password en el 2do input)
+            });
+
+            console.log("✅ Servidor procesó el cambio:", response.data);
+
+            if (response.data.success){
+                setSuccessMessage("¡Contraseña restablecida con ÉXITO 🔧!")
+
+                // Limpiamos los inputs
+                setNewPassword('');
+                setPassword('');
+                setTimeout(()=> {
+                    toggleView('login')
+                    // Limpiamos el token del la URL del browser para que quede limpia.
+                    window.history.replaceState({}, document.title, window.location.pathname); // Reemplaza la URL actual del navegador por la misma ruta, pero elimina los parámetros de la URL, sin recargar la página
+                }, 2000); // De vuelta al login.
+            }
+        }catch (error) {
+            console.log("❌ Fallo en el restablecimiento:", error);
+
+            if (error.response && error.response.data) {
+                // Si el backend dice "El token ya expiró" o "Token inválido"
+                setErrorMessage(error.response.data.mesagge || "Error al actualizar la contraseña.");
+            }else {
+                // Error de conexión física con el puerto 8080
+                setErrorMessage("ERROR_DE_NEXO: Imposible conectar con el servicio de actualización.")
+            }
+        } finally {
+            setIsLoading(false);
+        }
 
     };
 
@@ -504,12 +555,12 @@ const AuthPortal = () => {
 
 
 
-    const PasswordResetForm = () => (
+    const PasswordResetForm = () => {
         
-        
+        return (
             <form  onSubmit={handlePasswordResetSubmit} className="auth-v2-form-wrapper" >
                 <h2 className="auth-v2-title">CAMBIAR CONTRASEÑA 🔐</h2>
-
+                
                 {errorMessage && (
                     <div className='auth-v2-error-alert' style={{color: '#ff00ff', fontSize: '0.75rem', marginBottom: '1rem', fontFamily: 'monospace', textTransform: 'uppercase'}} >
                         ⚠️ {errorMessage}
@@ -559,10 +610,35 @@ const AuthPortal = () => {
                     CONFIRMAR NUEVA CONTRASEÑA
                 </button>
             </form>
-    );
+        );
+    };
     
 
 
+
+
+    const renderExpiredToken = () => (
+        <div className="auth-v2-form-wrapper" style={{ textAlign: 'center' }}>
+            <h2 className="auth-v2-title" style={{ color: '#ff00ff' }}>ACCESO RECHAZADO 🚷</h2>
+            <p className="auth-v2-description" style={{ fontSize: '0.9rem', lineHeight: '1.6' }}>
+                Este enlace de recuperación, ya no está disponible o su tiempo de ejecución ha expirado (expired time).
+            </p>
+            <div style={{ margin: '30px 0' }} className="auth-v2-error-alert">⚠️ ENLACE CADUCADO</div>
+            <div className="auth-v2-links-container">
+                <button
+                    type='button'
+                    onClick={() => {
+                        setIsTokenInvalid(false);
+                        toggleView('login');
+                    }}
+                    className="auth-v2-link-btn flex-center"
+                >
+                    <span className="material-symbols-outlined text-icon-sm">arrow_back</span>
+                    Volver al inicio de sesión
+                </button>
+            </div>
+        </div>
+    );
 
 
 
@@ -577,6 +653,8 @@ const AuthPortal = () => {
         return <Navigate to="/userDashboard" replace={true}/>;
     }
 
+   
+
     return (
         <div className="auth-v2-screen-container">
             <CSSParticles/>
@@ -588,7 +666,8 @@ const AuthPortal = () => {
                     {view === 'register' && renderRegister()}
                     {view === 'recover' && renderRecover()}
                     {view === 'checkEmail' && renderCheckEmail()}
-                    {view === 'resetPassword' && <PasswordResetForm/>}
+                    {view === 'resetPassword' && PasswordResetForm()}
+                    {view === 'expired' && renderExpiredToken()}
                 </div>
             </div>
         </div>
