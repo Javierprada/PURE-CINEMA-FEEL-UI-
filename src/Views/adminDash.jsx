@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom'
-
+import axios from 'axios';
 import './adminDash.css';
 import MovieLibrary from './movieLibrary';
 import DashboardHome from './DashboardHome';
@@ -15,21 +15,53 @@ import GaleriaInterna from './GaleriaInterna';
 
 
 const AdminDashb = () => {
-
-    // 1. NUEVO ESTADO: Controla que pantalla se renderiza en el Main.
-    const [activeSection, setActiveSection] = useState('injection'); 
-    //2. NUEVO ESTADO: Controla el modal.   
+    
+    // Estado unificado del formulario listo para subir a MySQL workbench
+    const [movieData, setMovieData] = useState({
+        title: '',
+        description: '',
+        genre: 'CIENCIA FICCIÓN',
+        director: '',
+        actors: '',
+        release_date: '',
+        duracion_minutes: '',
+        video_url: '', // Almacenará el ID o URL de YouTube / Vimeo
+        trailer_url: '',
+        poster_url: ''
+        
+    });
+    
+    // ---------- ESTADOS de CONTROL de la INTERFAZ ---------- //
+    const [isLoading, setIsLoading] = useState(false);
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
+    const [activeSection, setActiveSection] = useState('injection');
+    const [isScanningGallery, setIsScanningGallery] = useState(false);
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(()=> {
+        return localStorage.getItem('userSession') !== null;
+
+    });
+
+
+
+    // ---------------------- MANEJADORES de EVENTOS ------------------------ //
+     const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setMovieData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
     
-    
+    const handleFileChange = (e) => {
+        setSelectedFile(e.target.files[0]);
+    };
+
     const handleOpenPopover = () => setIsPopoverOpen (true);
     const handleClosePopover = () => setIsPopoverOpen (false);
-
-    //3.
-    const [isScanningGallery, setIsScanningGallery] = useState(false);
     
-    
-
 
     const handleLogout = (e) => {
         e.stopPropagation(); // Evitamos que el click se propague a la tarjeta del operador y abra el popover
@@ -54,61 +86,87 @@ const AdminDashb = () => {
             setActiveSection('gallery'); // Aqui es donde se renderiza el contenido de Galeria Interna
         }, 1900); // 1.5 segundos de retraso artificial.
     };
+
+    
+    
    
 
 
-    // Estado unificado del formulario listo para subir a MySQL workbench
-    const [movieData, setMovieData] = useState({
-        tituloOriginal: '',
-        sinopsis: '',
-        genero: 'CIENCIA FICCIÓN',
-        director: '',
-        elenco: '',
-        fechaLanzamiento: '',
-        duracion: '',
-        streamingMasterUrl: '', // Almacenará el ID o URL de YouTube / Vimeo
-        trailerUrl: ''
-    });
+    const handleMovieUploadSubmit = async (e) => {
+        e.preventDefault();
 
-    const [selectedFile, setSelectedFile] = useState(null);
+        // 1. Validación rapida en el frontend.
+        if (!movieData.title.trim() || !movieData.video_url.trim()) {
+            setErrorMessage("¡ERROR DE INYECCIÓN! El Título y la URL de Video son campos obligatorios.");
+            return;
+        }
+
+
+        setIsLoading(true);
+        setErrorMessage('');
+        setSuccessMessage('');
+
+        // 2. EMPAQUETAMOS los DATOS con los datos exactos que el controlador y modelo esperan.
+        const moviePayload = {
+            ...movieData,
+            duracion_minutes: movieData.duracion_minutes ? parseInt(movieData.duracion_minutes) : null
+        };
+
+
+
+        try {
+            console.log("🚀 Transmitiendo metadatos al puerto de control...", moviePayload);
+
+            //3. Petición POST al endpoint MVC del backend
+            const response = await axios.post('http://localhost:8080/api/injection/upload', moviePayload);
+
+            if (response.data.success) {
+                setSuccessMessage("¡PELÍCULA INYECTADA CON ÉXITO A LA PLATAFORMA! 🎬🍿");
+
+                //4. LIMPIAMOS TODOS LOS CAMPOS DEL PANEL DE ADMINISTRACIÓN.
+                setMovieData({
+                    title: '',
+                    description: '',
+                    genre: 'CIENCIA FICCIÓN',
+                    director: '',
+                    actors: '',
+                    release_date: '',
+                    duracion_minutes: '',
+                    video_url: '',
+                    trailer_url: '',
+                    poster_url: ''
+                });
+                setSelectedFile(null);
+            }
+        
+        }catch (error) {
+            console.error("❌ Falla en la inyección de media:", error);
+            if (error.response && error.response.data) {
+                setErrorMessage(error.response.data.Message);
+            }else {
+                setErrorMessage("ERROR_DE_NEXO: Imposible conectar con el servidor de base de datos.");
+            }
+        }finally {
+            setIsLoading(false);
+        }
+
+
+
+
+    };
+
+    
 
     useEffect(() => {
         console.log('%c PURE CINEMA FEEL: COMMAND CENTER ACTIVE ', 'background: #ff00ff; color: #000; font-weight: bold;');
     }, []);
 
 
-    const [isLoggedIn, setIsLoggedIn] = useState(()=> {
-        return localStorage.getItem('userSession') !== null;
-
-        
-
-    });
-
+    
     if (!isLoggedIn) {
         return <Navigate to='/authV2' replace={true}/>;
     }
-
-
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setMovieData(prevState => ({
-            ...prevState,
-            [name]: value
-        }));
-    };
-
-    const handleFileChange = (e) => {
-        setSelectedFile(e.target.files[0]);
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // Aquí conecta la llamada de backend Axios / Fetch hacia la base de datos MySQL
-        console.log("Inyectando Metraje al Catálogo de Datos:", movieData);
-        console.log("Archivo de Póster preparado:", selectedFile);
-        alert(`Película "${movieData.tituloOriginal}" inyectada con éxito a la base de datos.`);
-    };
+   
 
     return (
         <div className="admin-v4-body-mock admin-v4-cyber-grid">
@@ -240,7 +298,7 @@ const AdminDashb = () => {
                 <div className="admin-v4-workspace">
                     {console.log("Seccion activa actual:", activeSection)}
                     {activeSection === 'injection' && (
-                        <form onSubmit={handleSubmit} className="admin-v4-glass-card">
+                        <form onSubmit={handleMovieUploadSubmit} className="admin-v4-glass-card">
                             <div className="admin-v4-form-grid">
                                 
                                 {/* COLUMNA IZQUIERDA: METADATOS */}
@@ -254,8 +312,8 @@ const AdminDashb = () => {
                                         <label className="admin-v4-label">Título Original</label>
                                         <input 
                                             type="text" 
-                                            name="tituloOriginal"
-                                            value={movieData.tituloOriginal}
+                                            name="title"
+                                            value={movieData.title}
                                             onChange={handleInputChange}
                                             className="admin-v4-input admin-v4-input-title" 
                                             placeholder="EJ. SPIDERMAN 2038" 
@@ -266,8 +324,8 @@ const AdminDashb = () => {
                                     <div className="admin-v4-field-group">
                                         <label className="admin-v4-label">Sinopsis de Obra</label>
                                         <textarea 
-                                            name="sinopsis"
-                                            value={movieData.sinopsis}
+                                            name="description"
+                                            value={movieData.description}
                                             onChange={handleInputChange}
                                             className="admin-v4-textarea" 
                                             rows="3" 
@@ -280,8 +338,8 @@ const AdminDashb = () => {
                                         <div className="admin-v4-field-group">
                                             <label className="admin-v4-label">Género Cinematográfico</label>
                                             <select 
-                                                name="genero" 
-                                                value={movieData.genero}
+                                                name="genre" 
+                                                value={movieData.genre}
                                                 onChange={handleInputChange}
                                                 className="admin-v4-select"
                                             >
@@ -309,8 +367,8 @@ const AdminDashb = () => {
                                         <label className="admin-v4-label">Elenco Principal (CSV)</label>
                                         <input 
                                             type="text" 
-                                            name="elenco"
-                                            value={movieData.elenco}
+                                            name="actors"
+                                            value={movieData.actors}
                                             onChange={handleInputChange}
                                             className="admin-v4-input" 
                                             placeholder="ACTOR 1, ACTOR 2, ACTOR 3..." 
@@ -322,8 +380,8 @@ const AdminDashb = () => {
                                             <label className="admin-v4-label">Fecha de Lanzamiento</label>
                                             <input 
                                                 type="date" 
-                                                name="fechaLanzamiento"
-                                                value={movieData.fechaLanzamiento}
+                                                name="release_date"
+                                                value={movieData.release_date}
                                                 onChange={handleInputChange}
                                                 className="admin-v4-input" 
                                                 style={{ color: '#ff00ff', fontWeight: 'bold' }}
@@ -336,8 +394,8 @@ const AdminDashb = () => {
                                             <div style={{ position: 'relative' }}>
                                                 <input 
                                                     type="number" 
-                                                    name="duracion"
-                                                    value={movieData.duracion}
+                                                    name="duracion_minutes"
+                                                    value={movieData.duracion_minutes}
                                                     onChange={handleInputChange}
                                                     className="admin-v4-input" 
                                                     placeholder="120" 
@@ -364,8 +422,8 @@ const AdminDashb = () => {
                                             </div>
                                             <input 
                                                 type="text" 
-                                                name="streamingMasterUrl"
-                                                value={movieData.streamingMasterUrl}
+                                                name="video_url"
+                                                value={movieData.video_url}
                                                 onChange={handleInputChange}
                                                 className="admin-v4-input" 
                                                 placeholder="ID o link oculto de YouTube..." 
@@ -382,8 +440,8 @@ const AdminDashb = () => {
                                             </div>
                                             <input 
                                                 type="url" 
-                                                name="trailerUrl"
-                                                value={movieData.trailerUrl}
+                                                name="trailer_url"
+                                                value={movieData.trailer_url}
                                                 onChange={handleInputChange}
                                                 className="admin-v4-input" 
                                                 placeholder="https://youtube.com/watch?v=..." 
@@ -402,6 +460,7 @@ const AdminDashb = () => {
                                             <div style={{ fontSize: '8px', color: 'rgba(255, 0, 255, 0.6)', marginTop: '0.5rem' }}>Dimensión sugerida: 2000x3000px</div>
                                             <input 
                                                 type="file" 
+                                                name='poster_url'
                                                 accept="image/*"
                                                 onChange={handleFileChange}
                                                 style={{ position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer' }} 
@@ -409,10 +468,26 @@ const AdminDashb = () => {
                                         </div>
                                     </div>
 
-                                    <button type="submit" className="admin-v4-btn-execute">
+                                    {/* Espacio para ver el archivo seleccionado */}
+                                    {selectedFile && (
+                                        <p style={{ color: '#00fbfb', fontSize: '11px', marginTop: '0.5rem', textAlign: 'center' }}>
+                                            Archivo listo: 📄 {selectedFile.name}
+                                        </p>
+                                    )}
+
+                                    <button 
+                                        type="submit" 
+                                        className="admin-v4-btn-execute"
+                                        disable={isLoading}
+                                    >   
                                         <span className="material-symbols-outlined">bolt</span>
-                                        CARGAR PELÍCULA
+                                        {isLoading ? "PROCESANDO INYECCIÓN... ⏳" : "CARGAR PELÍCULA"}
                                     </button>
+
+                                    {errorMessage && <div style={{ color: '#ff0055', backgroundColor: 'rgba(255,0,85,0.1)', padding: '10px', border: '1px solid #ff0055', marginTop: '1rem', fontSize: '12px', fontWeight: 'bold' }}>{errorMessage}</div>}
+                                    {successMessage && <div style={{ color: '#00fbfb', backgroundColor: 'rgba(0,251,251,0.1)', padding: '10px', border: '1px solid #00fbfb', marginTop: '1rem', fontSize: '12px', fontWeight: 'bold' }}>{successMessage}</div>}
+
+
                                 </div>
 
                             </div>

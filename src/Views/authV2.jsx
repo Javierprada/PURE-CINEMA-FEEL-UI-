@@ -604,8 +604,7 @@ const AuthPortal = () => {
                 <button 
                     type='submit'
                     className="auth-v2-btn-execute auth-v2-btn-flicker" disabled={isLoading}
-                    
-                
+                    disabled={isLoading || isTokenInvalid} // BLoqueando botón por si el token a expirado o ya se uso.
                 >
                     CONFIRMAR NUEVA CONTRASEÑA
                 </button>
