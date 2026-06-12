@@ -774,8 +774,179 @@
 }
 
 
-/* Asegura la interacción y dimensiones correctas del reproductor interno */
-.react-player {
-  display: block;
-  pointer-events: auto !important; /* Fuerza al navegador a permitir los clics */
+/* 1. Fondo oscuro con desenfoque de alta tecnología */
+.cyber-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(5, 5, 5, 0.85);
+  backdrop-filter: blur(12px); /* Suaviza el fondo al estilo Mac/Cyberpunk */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999; /* Asegura que quede por encima de la barra lateral */
+  padding: 20px;
+  animation: fadeInOverlay 0.3s ease-out forwards;
+}
+
+/* 2. El contenedor del reproductor que "emerge" */
+.cyber-modal-content {
+  width: 100%;
+  max-width: 900px;
+  background: #0a0a0c;
+  border-radius: 12px;
+  border: 2px solid #00ffff;
+  box-shadow: 0 0 900px rgba(0, 255, 255, 0.2), 
+              inset 0 0 400px rgba(22, 2, 248, 0.098);
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  
+  /* ⚡ AQUÍ SUCEDE LA ANIMACIÓN DE EXPANSIÓN */
+  animation: cyberZoom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* 3. Encabezado del reproductor */
+.cyber-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.cyber-modal-header h3 {
+  color: #00ffff;
+  margin: 0;
+  font-family: 'Orbitron', sans-serif; /* Si usas tipografía futurista */
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+}
+
+
+/* 4. Botón de cerrar estilizado en Magenta Neón */
+.cyber-close-btn {
+  background: transparent;
+  border: 1px solid #ff00ff;
+  color: #ff00ff;
+  padding: 6px 14px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 11px;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 8px rgba(255, 0, 255, 0.2);
+}
+
+.cyber-close-btn:hover {
+  background: #ff00ff;
+  color: #fff;
+  box-shadow: 0 0 15px #ff00ff;
+  transform: scale(1.05);
+}
+
+/* 5. Contenedor de video (Protección contra fallas de tamaño) */
+
+.cyber-video-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 16 / 9;
+  background-color: #000;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+
+/* 6. El reproductor hijo se expande de forma absoluta y total dentro del padre */
+.cyber-video-wrapper .react-player,
+.cyber-video-wrapper youtube-video {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+}
+
+
+
+.cyber-modal-desc {
+  margin-top: 15px;
+  color: #8a8a93;
+  font-size: 13px;
+  line-height: 1.5;
+  border-left: 3px solid #ff00ff;
+  padding-left: 10px;
+}
+
+
+
+
+
+
+/* ==========================================
+   🎮 DEFINICIÓN DE LAS ANIMACIONES (KEYFRAMES)
+   ========================================== */
+
+/* Animación del fondo */
+@keyframes fadeInOverlay {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Animación de la tarjeta expandiéndose con un ligero rebote futurista */
+@keyframes cyberZoom {
+  0% {
+    opacity: 0;
+    transform: scale(0.3); /* Empieza pequeñito, simulando salir desde la card */
+    filter: brightness(2) blur(5px); /* Simula un destello de luz al abrirse */
+  }
+  70% {
+    filter: brightness(1.2) blur(0px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1); /* Tamaño final perfecto */
+  }
+}
+
+
+/* Escudo Superior: Bloquea título, "Ver más tarde" y "Compartir" */
+.cyber-shield-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 82%;
+  height: 54px; /* Cubre toda la barra superior negra de YouTube */
+  z-index: 10;
+  background: transparent;
+  cursor: default !important; /* Quita el puntero de link */
+}
+
+/* Escudo Inferior Derecho: Bloquea el botón con el logo de "YouTube" */
+.cyber-shield-bottom-right {
+  position: absolute;
+  bottom: 10px;
+  right: 0;
+  width: 30%; /* Ajustado para tapar solo la esquina del logo y pantalla completa */
+  height: 60px; 
+  z-index: 10;
+  background: transparent;
+  cursor: default !important;
+}
+
+/* Escudo Central: Bloquea el clic directo en el video que pausa o redirige, 
+   obligando al usuario a pausar usando los controles inferiores legítimos */
+.cyber-shield-center-play {
+  position: absolute;
+  top: 435px;
+  bottom: 10px;
+  left: 29px;
+  width: 20%;
+  height: 60px;
+  z-index: 10;
+  background: transparent;
+  cursor: default !important;
 }

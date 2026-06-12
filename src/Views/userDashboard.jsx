@@ -194,54 +194,58 @@ export default function UserDashboard() {
           
           {activeTab === 'home' && (
             <>
-
               {/* SECCIÓN CIBERNETICA DEL REPRODUCTOR PRINCIPAL (dinamico) */}
               {selectedMovie && (
-                <section style={{ marginBottom: '30px', background: '#111', padding: '20px', borderRadius: '12px', border: '1px solid #333', display: 'block' }}>
-                  
-                  {/* Barra superior de control */}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }} >
-                    <h3 style={{ color: '#00ffff', margin: 0 }}>📺 REPRODUCIENDO: {selectedMovie.title}</h3>
-                    <button onClick={() => setSelectedMovie(null)} style={{ background: '#ff00ff', border: 'none', color: '#fff', padding: '8px 18px', cursor: 'pointer', borderRadius: '6px', fontWeight: 'bold', boxShadow: '0 0 10px #ff00ff' }}>
-                      ✖ CERRAR SALA
-                    </button>
-                  </div>
+                <div className="cyber-modal-overlay" onClick={() => setSelectedMovie(null)}>
+                  <div className="cyber-modal-content" onClick={(e) => e.stopPropagation()}>
 
-                  {/* 📋 LOGGER DE CONTROL: Esto imprimirá en tu consola F12 cada vez que intente renderizar */}
-                  {console.log("🎬 URL Original DB:", selectedMovie.video_url)}
-                  {console.log("🚀 URL procesada para react-player:", formatUrlForPlayer(selectedMovie.video_url))}
+                    {/*Encabezado con estetica NEÓN*/}
+                    <div className="cyber-modal-header">
+                      <h3>
+                        <span className="cyber-scanline"></span>
+                        📺 EN LÍNEA: {selectedMovie.title}
+                      </h3>
 
-                  {/* 🔥 TRUCO MAESTRO: Contenedor con hack de padding (Inmune a fallos de Flexbox/Grid) */}
-                  <div style={{ 
-                    position: 'relative',
-                    width: '100%', 
-                    aspectRatio: '16 / 9',
-                    backgroundColor: '#000', 
-                    borderRadius: '8px', 
-                    overflow: 'hidden', 
-                    border: '2px solid #00ffff' 
-                  }}>
-                    <ReactPlayer
-                      src={formatUrlForPlayer(selectedMovie.video_url)} // Le pasamos la URL directa de la BD sin transformar
-                      className="react-player"
+                      <button className="cyber-close-btn" onClick={() => setSelectedMovie(null)}>
+                        ✖ CERRAR SALA
+                      </button>
+                    </div>
+
+                    {/*Contenedor del Reproductor con ratio 16:9*/}
+                    <div className="cyber-video-wrapper">
+                      <ReactPlayer className="react-player"
+                      src={formatUrlForPlayer(selectedMovie.video_url)}
+                      controls={true}
+                      playing={true}
                       width="100%"
                       height="100%"
-                      style={{ position: 'absolute', top: 0, left: 0 }}
-                      controls={true} // Muestra controles de reproducción nativos
-                      playing={true} // Cambia a true para que inicie solo
-                      muted={true}
-                      config={{
-                        youtube:{
-                          playerVars: {showinfo: 1, origin: window.location.origin}
+                      config={
+                        {youtube:{
+                          playerVars: {
+                            controls: 1, 
+                            modestbranding: 1,
+                            origin: window.location.origin
+                          }
+                        },
+                        vimeo: {
+                          playerVars: {
+                            controls: true,
+                            color: "00ffff"
+                          }
                         }
                       }}
-                      onError={(e) => console.error("❌ ERROR CRÍTICO DE REPRODUCCIÓN EN REACTPLAYER:", e)}
-                    
-                    />
+                      onError={(e)=> console.error("❌ ERROR EN REACTPLAYER:", e)}
+                      
+                      />
+                      {/* 🛡️ CAPAS DE PROTECCIÓN CONTRA CLICS ACCIDENTALES */}
+                      <div className="cyber-shield-top"></div>
+                      <div className="cyber-shield-bottom-right"></div>
+                      <div className="cyber-shield-center-play"></div> 
+                    </div>
+                    <p className="cyber-modal-desc">{selectedMovie.description}</p>
                   </div>
-                  
-                  <p style={{ marginTop: '15px', color: '#ccc', fontStyle: 'italic', lineHeight: '1.5' }}>{selectedMovie.description}</p>
-                </section>
+
+                </div>
               )}
 
 
