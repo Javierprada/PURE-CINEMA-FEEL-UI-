@@ -772,3 +772,10 @@
   0%, 100% { opacity: 1; }
   50% { opacity: .5; }
 }
+
+
+/* Asegura la interacción y dimensiones correctas del reproductor interno */
+.react-player {
+  display: block;
+  pointer-events: auto !important; /* Fuerza al navegador a permitir los clics */
+}
