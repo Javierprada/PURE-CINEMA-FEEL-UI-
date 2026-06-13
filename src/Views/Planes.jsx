@@ -3,10 +3,12 @@ import { Navigate } from 'react-router-dom';
 import './Planes.css';
 
 export default function Planes() {
+    
     const [planSelected, setPlanSelected] = useState(null);
     const [particles, setParticles] = useState([]);
     const [explorar, setExplorar] = useState(false);
     const [loggin, setLoggin] = useState(false);
+    const [pyment, setPyment] = useState(false);
 
     // Generación dinámica de partículas al montar el componente
     useEffect(() => {
@@ -43,6 +45,10 @@ export default function Planes() {
     };
 
 
+
+   
+
+
     if (explorar) {
         return <Navigate to='/HomePage'/>;
     }
@@ -50,6 +56,11 @@ export default function Planes() {
     if (loggin) {
         return <Navigate to='/authV2'/>;
     }
+
+    if (pyment) {
+        return <Navigate to='/pyment' replace={true}/>
+    }
+   
 
 
     return (
@@ -124,7 +135,10 @@ export default function Planes() {
                                     <span style={{ textDecoration: 'line-through' }}>Audio Espacial</span>
                                 </li>
                             </ul>
-                            <button className="plans-v3-btn-execute">
+                            <button 
+                                className="plans-v3-btn-execute"
+                                onClick={(e)=> {e.preventDefault(); setPyment(true)}}
+                            >
                                 {planSelected === 'basic' ? 'Plan Seleccionado' : 'Seleccionar'}
                             </button>
                         </div>
@@ -160,7 +174,10 @@ export default function Planes() {
                                     <span>Descargas Offline</span>
                                 </li>
                             </ul>
-                            <button className="plans-v3-btn-execute">
+                            <button 
+                                className="plans-v3-btn-execute"
+                                onClick={(e)=> {e.preventDefault(); setPyment(true)}}
+                            >
                                 {planSelected === 'cinephile' ? 'Plan Seleccionado' : 'Seleccionar'}
                             </button>
                         </div>
@@ -195,7 +212,10 @@ export default function Planes() {
                                     <span>Soporte Prioritario</span>
                                 </li>
                             </ul>
-                            <button className="plans-v3-btn-execute">
+                            <button 
+                                className="plans-v3-btn-execute"
+                                onClick={(e)=> {e.preventDefault(); setPyment(true)}}
+                            >
                                 {planSelected === 'studio' ? 'Plan Seleccionado' : 'Seleccionar'}
                             </button>
                         </div>

@@ -347,6 +347,7 @@ const AdminDashb = () => {
                                                 <option value="NOIR FUTURISTA">NOIR FUTURISTA</option>
                                                 <option value="DOCUMENTAL">DOCUMENTAL</option>
                                                 <option value="ANIMACIÓN AVANZADA">ANIMACIÓN AVANZADA</option>
+                                                <option value="EDUCATIVO">EDUCATIVO</option>
                                             </select>
                                         </div>
 

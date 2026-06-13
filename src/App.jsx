@@ -15,6 +15,7 @@ import Statistics from './Views/Statistics';
 import Logs from './Views/Logs';
 import PopoverAdmin from './Views/PopoverAdmin';
 import GaleriaInterna from './Views/GaleriaInterna';
+import Pyment from './Views/Pyment';
 
 
 
@@ -45,6 +46,7 @@ function App() {
             <Route path='/logs' element={<Logs/>} ></Route>
             <Route path='/popoverAdmin' element={<PopoverAdmin/>} ></Route>
             <Route path='/inspeccion-galleria' element={<GaleriaInterna/>} ></Route>
+            <Route path='/pyment' element={<Pyment/>}></Route>
             
           </Routes>
       
