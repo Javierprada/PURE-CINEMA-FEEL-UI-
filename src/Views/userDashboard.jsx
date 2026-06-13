@@ -11,103 +11,118 @@ import './UserDashboard.css';
 
 
 export default function UserDashboard() {
-  const [activeTab, setActiveTab] = useState('home');
-  const [searchQuery, setSearchQuery] = useState('');
+  
+    const [activeTab, setActiveTab] = useState('home');
+    const [searchQuery, setSearchQuery] = useState('');
+    
 
-  // ESTADOS DINAMICOS: Para la base de datos y el reproductor.
-  const [movies, setMovies] = useState([]); // Aqui se guardan las películas de MYSQL.
-  const [playlist, setPlaylist] = useState([]); // Películas marcadas como favoritas. Funcionalidad dinamica.
-  const [selectedMovie, setSelectedMovie] = useState(null); // Película que se reproduce en tiempo real.
-  const [isLoading, setIsLoading] = useState(true);
-  const ENDPOINT_MOVIES = 'http://localhost:8080/api/get/movies';
+    // ESTADOS DINAMICOS: Para la base de datos y el reproductor.
+    const [movies, setMovies] = useState([]); // Aqui se guardan las películas de MYSQL.
+    const [playlist, setPlaylist] = useState([]); // Películas marcadas como favoritas. Funcionalidad dinamica.
+    const [selectedMovie, setSelectedMovie] = useState(null); // Película que se reproduce en tiempo real.
+    const [isLoading, setIsLoading] = useState(true);
+    const ENDPOINT_MOVIES = 'http://localhost:8080/api/get/movies';
+    const [isFullscreen, setIsFullscreen] = useState(false);
 
-  // EFECTO PARA TRAER LAS PELÍCULAS DESDE EL SERVIDOR
-  useEffect(()=>{
-    axios.get(ENDPOINT_MOVIES)
-    .then((Response)=> {
-      console.log("📡 Respuesta del servidor:", Response.data)
+    // EFECTO PARA TRAER LAS PELÍCULAS DESDE EL SERVIDOR
+    useEffect(()=>{
+      axios.get(ENDPOINT_MOVIES)
+      .then((Response)=> {
+        console.log("📡 Respuesta del servidor:", Response.data)
 
-      if (Response.data && Array.isArray(Response.data.movies)) {
-        setMovies(Response.data.movies); // Guardamos solo el array
-      } else if (Array.isArray(Response.data)) {
-        setMovies(Response.data);
+        if (Response.data && Array.isArray(Response.data.movies)) {
+          setMovies(Response.data.movies); // Guardamos solo el array
+        } else if (Array.isArray(Response.data)) {
+          setMovies(Response.data);
+        }
+        
+      })
+      .catch ((error) => {
+        console.error("❌ Error al conectar con Pure Cinema Feel API:", error);
+      })
+      .finally (()=> {
+        setIsLoading(false);
+      })
+    },[])
+
+
+
+
+      // 🛡️ PARSER ULTRA-BLINDADO: Extrae la URL incluso si viene un tag <iframe> completo
+      const formatUrlForPlayer = (url) => {
+      if (!url) return '';
+
+      let targetUrl = url.trim();
+
+      // Si guardaste un <iframe> completo en la DB, esto extrae solo el contenido del 'src'
+      if (targetUrl.includes('<iframe')) {
+        const srcMatch = targetUrl.match(/src=["']([^"']+)["']/);
+        if (srcMatch && srcMatch[1]) {
+          targetUrl = srcMatch[1];
+        }
       }
-      
-    })
-    .catch ((error) => {
-      console.error("❌ Error al conectar con Pure Cinema Feel API:", error);
-    })
-    .finally (()=> {
-      setIsLoading(false);
-    })
-  },[])
 
-
-
-
-  // 🛡️ PARSER ULTRA-BLINDADO: Extrae la URL incluso si viene un tag <iframe> completo
-  const formatUrlForPlayer = (url) => {
-    if (!url) return '';
-
-    let targetUrl = url.trim();
-
-    // Si guardaste un <iframe> completo en la DB, esto extrae solo el contenido del 'src'
-    if (targetUrl.includes('<iframe')) {
-      const srcMatch = targetUrl.match(/src=["']([^"']+)["']/);
-      if (srcMatch && srcMatch[1]) {
-        targetUrl = srcMatch[1];
+      // Corregir protocolos relativos comunes en embeds (//player.vimeo... -> https://player.vimeo...)
+      if (targetUrl.startsWith('//')) {
+        targetUrl = 'https:' + targetUrl;
       }
-    }
 
-    // Corregir protocolos relativos comunes en embeds (//player.vimeo... -> https://player.vimeo...)
-    if (targetUrl.startsWith('//')) {
-      targetUrl = 'https:' + targetUrl;
-    }
+      // Conversión de Embed de Vimeo a Link Nativo
+      if (targetUrl.includes("player.vimeo.com/video/")) {
+        const vimeoId = targetUrl.split('/video/')[1]?.split('?')[0];
+        return `https://vimeo.com/${vimeoId}`;
+      }
 
-    // Conversión de Embed de Vimeo a Link Nativo
-    if (targetUrl.includes("player.vimeo.com/video/")) {
-      const vimeoId = targetUrl.split('/video/')[1]?.split('?')[0];
-      return `https://vimeo.com/${vimeoId}`;
-    }
+      // Conversión de Embed de YouTube a Link Nativo
+      if (targetUrl.includes("youtube.com/embed/")) {
+        const ytId = targetUrl.split('/embed/')[1]?.split('?')[0];
+        return `https://www.youtube.com/watch?v=${ytId}`;
+      }
 
-    // Conversión de Embed de YouTube a Link Nativo
-    if (targetUrl.includes("youtube.com/embed/")) {
-      const ytId = targetUrl.split('/embed/')[1]?.split('?')[0];
-      return `https://www.youtube.com/watch?v=${ytId}`;
-    }
-
-    return targetUrl;
-  };
+      return targetUrl;
+    };
 
 
 
   
 
 
-  // Alternar favoritos
-  const toggleFavorite = (movie) => {
-    if (playlist.some(m => m.id === movie.id)) {
-      setPlaylist(playlist.filter(m => m.id !== movie.id)); // Deja pasar a todas las peliculas cuyo 'id' sea diferente la de la pelicula que quiero quitar.
-    } else {
-      setPlaylist([...playlist, movie]);
-    }
-  };
+    // Alternar favoritos
+    const toggleFavorite = (movie) => {
+      if (playlist.some(m => m.id === movie.id)) {
+        setPlaylist(playlist.filter(m => m.id !== movie.id)); // Deja pasar a todas las peliculas cuyo 'id' sea diferente la de la pelicula que quiero quitar.
+      } else {
+        setPlaylist([...playlist, movie]);
+      }
+    };
 
 
     // Lógica de cierre de sesión.
-  const [shouldRedirect, setShoulRedirect] = useState (false);
-  const handleLogout = () => {
-    localStorage.removeItem('userSession');
-    setShoulRedirect(true);
-  };
+    const [shouldRedirect, setShoulRedirect] = useState (false);
+    const handleLogout = () => {
+      localStorage.removeItem('userSession');
+      setShoulRedirect(true);
+    };
 
 
-  // Guardian declarativo de expulsión.
-  // Si esta activo, interrumpe el renderizado y saca al usuario inmediatamente.
-  if (shouldRedirect) {
-    return <Navigate to='/authV2' replace={true}/>;
-  }
+    // Guardian declarativo de expulsión.
+    // Si esta activo, interrumpe el renderizado y saca al usuario inmediatamente.
+    if (shouldRedirect) {
+      return <Navigate to='/authV2' replace={true}/>;
+    }
 
+
+    // Detectar el proveedor en tiempo real
+    const url = selectedMovie?.video_url?.toLowerCase() || '';
+    const isYouTube = url.includes('youtube') || url.includes('youtu.be');
+    const isVimeo = url.includes('vimeo');
+
+    //Asiganamos la clase del proveedor
+    const providerClass = isYouTube ? 'provider-youtube' : isVimeo ? 'provider-vimeo' : 'provider-unknown'
+    
+    const toggleFullscreen = () => {
+      setIsFullscreen(prev => !prev);
+    };
 
 
   return (
@@ -193,11 +208,14 @@ export default function UserDashboard() {
         <div className="content-scroll-canvas">
           
           {activeTab === 'home' && (
-            <>
+            <div>
               {/* SECCIÓN CIBERNETICA DEL REPRODUCTOR PRINCIPAL (dinamico) */}
               {selectedMovie && (
-                <div className="cyber-modal-overlay" onClick={() => setSelectedMovie(null)}>
-                  <div className="cyber-modal-content" onClick={(e) => e.stopPropagation()}>
+               <> 
+                <div>
+                {/* 📺 REPRODUCTOR PRINCIPAL CONDICIONAL*/}
+                  <div className="cyber-modal-overlay" onClick={() => setSelectedMovie(null)}>
+                  <div className={`cyber-modal-content ${isFullscreen ? 'cyber-modal-fullscreen' : ''}`} onClick={(e) => e.stopPropagation()}>
 
                     {/*Encabezado con estetica NEÓN*/}
                     <div className="cyber-modal-header">
@@ -206,57 +224,71 @@ export default function UserDashboard() {
                         📺 EN LÍNEA: {selectedMovie.title}
                       </h3>
 
+
+                      <button className='cyber-fullscreen-btn' onClick={toggleFullscreen}>
+                        {isFullscreen ? '🗗 SALIR' : '🗖 MAX'}
+                      </button>
+
                       <button className="cyber-close-btn" onClick={() => setSelectedMovie(null)}>
                         ✖ CERRAR SALA
                       </button>
                     </div>
 
                     {/*Contenedor del Reproductor con ratio 16:9*/}
-                    <div className="cyber-video-wrapper">
+                    <div className={`cyber-video-wrapper ${providerClass}`}>
                       <ReactPlayer className="react-player"
-                      src={formatUrlForPlayer(selectedMovie.video_url)}
-                      controls={true}
-                      playing={true}
-                      width="100%"
-                      height="100%"
-                      config={
-                        {youtube:{
-                          playerVars: {
-                            controls: 1, 
-                            modestbranding: 1,
-                            origin: window.location.origin
+                        src={formatUrlForPlayer(selectedMovie.video_url)}
+                        controls={true}
+                        playing={true}
+                        width="100%"
+                        height="100%"
+                        config={
+                          {youtube:{
+                            playerVars: {
+                              controls: 1, 
+                              modestbranding: 1,
+                              fs: 0,
+                              origin: window.location.origin
+                            }
+                          },
+                          vimeo: {
+                            playerOption: {
+                              controls: true,
+                              color: "00ffff"
+                            }
                           }
-                        },
-                        vimeo: {
-                          playerVars: {
-                            controls: true,
-                            color: "00ffff"
-                          }
-                        }
-                      }}
-                      onError={(e)=> console.error("❌ ERROR EN REACTPLAYER:", e)}
-                      
+                          
+                        }}
+                        onError={(e)=> console.error("❌ ERROR EN REACTPLAYER:", e)}
+                        
                       />
                       {/* 🛡️ CAPAS DE PROTECCIÓN CONTRA CLICS ACCIDENTALES */}
-                      <div className="cyber-shield-top"></div>
-                      <div className="cyber-shield-bottom-right"></div>
-                      <div className="cyber-shield-center-play"></div> 
+                      {isVimeo && (
+                        <>
+                        <div className="cyber-shield vimeo-shield-top-right"></div>
+                        <div className="cyber-shield vimeo-shield-bottom-right"></div>
+                        <div className="cyber-shield vimeo-shield-bottom-center"></div>
+                        </>
+                      )}
+
+                      {isYouTube && (
+                        <>
+                        <div className="cyber-shield yt-shield-top-left"></div>
+                        <div className="cyber-shield yt-shield-bottom"></div>
+                        
+                        </>
+                      )}
+
+                     
+
                     </div>
                     <p className="cyber-modal-desc">{selectedMovie.description}</p>
                   </div>
-
                 </div>
-              )}
-
-
-
-
-
-
-
-
-
-
+              </div>
+             </>
+            )}
+          
               {/* HÉROE DESTACADO */}
               <section className="hero-spotlight-grid">
                 <div className="hero-banner-main">
@@ -334,8 +366,10 @@ export default function UserDashboard() {
                   </div>
                 )}
               </section>
-            </>
+            </div>
+          
           )}
+        
 
           {activeTab === 'playlist' && (
             <section className="movie-grid-section-wrapper">
@@ -401,7 +435,7 @@ export default function UserDashboard() {
             </section>
           )}
 
-        </div>
+         </div>
       </main>
     </div>
   );

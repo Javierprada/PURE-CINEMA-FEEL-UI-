@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { Navigate } from 'react-router-dom';
 import './Planes.css';
 
 export default function Planes() {
     const [planSelected, setPlanSelected] = useState(null);
     const [particles, setParticles] = useState([]);
+    const [explorar, setExplorar] = useState(false);
+    const [loggin, setLoggin] = useState(false);
 
     // Generación dinámica de partículas al montar el componente
     useEffect(() => {
@@ -39,6 +42,16 @@ export default function Planes() {
         // Aquí conectaremos a futuro el activador del modal/checkout de pruebas.
     };
 
+
+    if (explorar) {
+        return <Navigate to='/HomePage'/>;
+    }
+
+    if (loggin) {
+        return <Navigate to='/authV2'/>;
+    }
+
+
     return (
         <div className="plans-v3-screen-wrapper">
             {/* Fondo de Partículas Animado */}
@@ -53,7 +66,7 @@ export default function Planes() {
                 <div className="plans-v3-navbar">
                     <div className="plans-v3-brand">Pure Cinema Feel</div>
                     <nav className="plans-v3-nav-links">
-                        <a href="#explorar" className="plans-v3-nav-link">Explorar</a>
+                        <a href="/explorar" className="plans-v3-nav-link" onClick={(e)=> {e.preventDefault(); setExplorar(true)}} >Explorar</a>
                         <a href="#peliculas" className="plans-v3-nav-link">Películas</a>
                         <a href="#estrenos" className="plans-v3-nav-link">Estrenos</a>
                         <a href="#precios" className="plans-v3-nav-link active">Precios</a>
@@ -62,7 +75,7 @@ export default function Planes() {
                         <button className="plans-v3-icon-btn">
                             <span className="material-symbols-outlined">account_circle</span>
                         </button>
-                        <button className="plans-v3-btn-start">Comenzar</button>
+                        <button className="plans-v3-btn-start" onClick={(e)=> {e.preventDefault(); setLoggin(true)}} >Comenzar</button>
                     </div>
                 </div>
             </header>

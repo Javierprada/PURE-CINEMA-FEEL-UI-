@@ -1,7 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Navigate } from 'react-router-dom'
 import './HomePage.css';
 
 function HomePage() {
+  const [redirectToPlanes, setRedirectToPlanes] = useState(false);
+  const [loggin, setLoggin] = useState(false);
+  
   useEffect(() => {
     const handleScroll = () => {
       const header = document.getElementById('main-header');
@@ -26,22 +30,40 @@ function HomePage() {
     console.log(`Opening movie details for: ${movieTitle}`);
   };
 
+  
+
+
+  if (redirectToPlanes) {
+    return <Navigate to='/planes' replace={false}/>;
+  }
+
+  if (loggin) {
+    return <Navigate to='/authV2' replace={true}/>; 
+  }
+
   return (
     <div className="homepage-root">
       <header id="main-header">
         <div className="container nav-wrapper">
           <div className="logo-v4">Pure Cinema Feel</div>
-          <nav>
+          <nav className='homepage-nav-v3'>
             <ul>
               <li><a className="active" href="#">Explorar</a></li>
               <li><a href="#">Películas</a></li>
-              <li><a href="#">Estrenos</a></li>
-              <li><a href="#">Precios</a></li>
+              <li><a href="#HomePage">Estrenos</a></li>
+              <li><a 
+                    href="/planes"
+                    onClick={(e)=> {
+                      e.preventDefault(); // Evita el comportamiento por defecto del enlace
+                      setRedirectToPlanes(true); // Activa la redirección
+                    }}
+                  >Precios
+                  </a></li>
             </ul>
           </nav>
           <div className="header-actions">
             <img alt="Cinema Camera" className="camera-icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB8ZU5m_WsLiR_NlDQxrgx7HVAY8xUZu3GW_DR0B5Qrs50KkAJ9ZblEo43-X6s4HTxAqZGLvBhL93H4WZdbd-R6mtBpqSl0sFqSEi0MUb2-2l8InIOpUZ_53-PumWxW_oEwYi2xFD5Jjt_AFaV7pLeBcqthMBcHskof_jVwm3JYLyCl-R1LOqcZH4_Ln1BqgGL3brBxp0TiZIPBDji0mfGw3pDKvkPa9_SScUSxXfWx-d7BVY7zzvu8zitnIAsoWQkYB_Ms4ugPgA" />
-            <button className="btn-primary">Comenzar</button>
+            <button className="btn-primary" onClick={(e)=> {e.preventDefault(); setLoggin(true)}} >Comenzar</button>
             <span className="material-symbols-outlined account-icon">account_circle</span>
           </div>
         </div>

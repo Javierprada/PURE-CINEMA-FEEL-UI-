@@ -111,7 +111,7 @@
 .profile-container {
   display: flex;
   flex-direction: column;
-  items-center: center;
+  align-items: center;
   text-align: center;
   gap: 12px;
   padding: 0 16px;
@@ -180,7 +180,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  flex-1: 1;
+  flex: 1;
   flex-grow: 1;
 }
 
@@ -777,27 +777,34 @@
 /* 1. Fondo oscuro con desenfoque de alta tecnología */
 .cyber-modal-overlay {
   position: fixed;
+  top: 0;
+  left: 0;
   inset: 0;
-  background-color: rgba(5, 5, 5, 0.85);
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.285);
   backdrop-filter: blur(12px); /* Suaviza el fondo al estilo Mac/Cyberpunk */
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 9999; /* Asegura que quede por encima de la barra lateral */
-  padding: 20px;
+  padding: 0;
   animation: fadeInOverlay 0.3s ease-out forwards;
 }
 
 /* 2. El contenedor del reproductor que "emerge" */
 .cyber-modal-content {
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  max-width: 900px;
+  max-width: 1000px; /* Ancho máximo ideal para video */
+  max-height: 90vh;  /* Evita que se salga de la pantalla verticalmente */
   background: #0a0a0c;
   border-radius: 12px;
   border: 2px solid #00ffff;
   box-shadow: 0 0 900px rgba(0, 255, 255, 0.2), 
               inset 0 0 400px rgba(22, 2, 248, 0.098);
-  padding: 20px;
+  
   position: relative;
   overflow: hidden;
   
@@ -810,7 +817,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 15px;
+  
 }
 
 .cyber-modal-header h3 {
@@ -839,18 +846,56 @@
 }
 
 .cyber-close-btn:hover {
-  background: #ff00ff;
-  color: #fff;
-  box-shadow: 0 0 15px #ff00ff;
+  background-color: #00ffff;
+  color: #ff00ff;
+  box-shadow: 0 0 50px rgb(0, 242, 255), 0 0 50px rgb(0, 242, 255) ;
   transform: scale(1.05);
 }
+
+
+.cyber-modal-fullscreen {
+  position: block;
+  
+  max-width: 100%;
+  max-height: 99%;
+
+  z-index: 999999;
+
+  background: transparent;
+}
+
+
+.cyber-fullscreen-btn {
+  background: transparent;
+  border: 1px solid #ff00ff;
+  color: #ff00ff;
+  padding: 1px;
+  border-radius: 4px;
+  font-weight: bold;
+  text-transform: uppercase;
+  cursor: pointer;
+  margin-left: 60%;
+  box-shadow: 0 0 8px rgba(255, 0, 255, 0.2);
+}
+
+.cyber-fullscreen-btn:hover {
+  background-color: #00ffff;
+  color: #ff00ff;
+  box-shadow: 0 0 50px rgb(0, 242, 255), 0 0 50px rgb(0, 242, 255) ;
+  transform: scale(1.05);
+}
+
 
 /* 5. Contenedor de video (Protección contra fallas de tamaño) */
 
 .cyber-video-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: relative;
   width: 100%;
   height: 100%;
+  margin-bottom: 30px;
   aspect-ratio: 16 / 9;
   background-color: #000;
   border-radius: 6px;
@@ -876,9 +921,9 @@
   margin-top: 15px;
   color: #8a8a93;
   font-size: 13px;
-  line-height: 1.5;
+  line-height: 0.5;
   border-left: 3px solid #ff00ff;
-  padding-left: 10px;
+  padding-left: 20px;
 }
 
 
@@ -913,40 +958,62 @@
 }
 
 
-/* Escudo Superior: Bloquea título, "Ver más tarde" y "Compartir" */
-.cyber-shield-top {
+/* Escudo Superior derecho*/
+.vimeo-shield-top-right{
+  position: absolute;
+  top: 4px;
+  left: 46rem;
+  width: 18%;
+  height: 43px; /* Cubre toda la barra superior negra de YouTube */
+  z-index: 10;
+  background: #00ff04;
+  cursor: default !important; /* Quita el puntero de link */
+}
+
+/* Escudo Inferior abajo derecho*/
+.vimeo-shield-bottom-right{
+  position: absolute;
+  top: 462px;
+  left: 91%;
+  width: 9%;
+  height: 38px; /* Cubre toda la barra superior negra de YouTube */
+  z-index: 10;
+  background: #00ff04;
+  cursor: default !important; /* Quita el puntero de link */
+}
+
+/* Escudo Inferior abajo derecho*/
+.vimeo-shield-bottom-center{
+  position: absolute;
+  top: 462px;
+  left: 79%;
+  width: 89px;
+  height: 38px; /* Cubre toda la barra superior negra de YouTube */
+  z-index: 10;
+  background: #00ff04;
+  cursor: default !important; /* Quita el puntero de link */
+}
+
+.yt-shield-top-left {
   position: absolute;
   top: 0;
   left: 0;
   width: 82%;
-  height: 54px; /* Cubre toda la barra superior negra de YouTube */
+  height: 52px; /* Cubre toda la barra superior negra de YouTube */
   z-index: 10;
   background: transparent;
   cursor: default !important; /* Quita el puntero de link */
 }
 
-/* Escudo Inferior Derecho: Bloquea el botón con el logo de "YouTube" */
-.cyber-shield-bottom-right {
+.yt-shield-bottom {
   position: absolute;
-  bottom: 10px;
-  right: 0;
-  width: 30%; /* Ajustado para tapar solo la esquina del logo y pantalla completa */
-  height: 60px; 
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 70px; /* Cubre toda la barra superior negra de YouTube */
   z-index: 10;
-  background: transparent;
-  cursor: default !important;
+  background: rgba(0, 255, 255, 0);
+  cursor: default !important; /* Quita el puntero de link */
 }
 
-/* Escudo Central: Bloquea el clic directo en el video que pausa o redirige, 
-   obligando al usuario a pausar usando los controles inferiores legítimos */
-.cyber-shield-center-play {
-  position: absolute;
-  top: 435px;
-  bottom: 10px;
-  left: 29px;
-  width: 20%;
-  height: 60px;
-  z-index: 10;
-  background: transparent;
-  cursor: default !important;
-}
+

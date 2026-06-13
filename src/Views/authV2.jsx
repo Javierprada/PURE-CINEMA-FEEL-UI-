@@ -30,6 +30,7 @@ const AuthPortal = () => {
     // 2. Instancia el hook de React Router para leer parámetros
     const [searchParams] = useSearchParams();
     const [isTokenInvalid, setIsTokenInvalid] = useState(false);
+    const [redirectToHome, setRedirectToHome] = useState(false);
     
 
     // NUEVOS ESTADOS DE CONTROL Y AUTENTICACIÓN
@@ -282,6 +283,10 @@ const AuthPortal = () => {
     };
 
 
+    if (redirectToHome){
+        return <Navigate to='/HomePage' replace={false}/>;
+    }
+
 
 
     const renderHeader = () => (
@@ -291,6 +296,7 @@ const AuthPortal = () => {
                     src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQss1fwGp5AXb2K0F9x3iCyp64TnOg-qhrnTvYIUvWIOPuxGiZnHjZfWU7CQ-JIIFcgSVbStjubkgjVD0PGt8JzHEeGWrjMz7bkSq018xMa86ZCV9X9vdrn1_p8hiWmmMwJR8KGD55BTpw9OMo0mXviFeqbAAFA06Fk7RnR1NwW6iFXa2H7zc6TzTHW_VRwSnSnASRYX0EktxqXwOsUvsvfMkhCmakOe8QXziNSAARhH7ie8BV-1SG3_vM53QzBr0oH_ZDmB7-LA" 
                     alt="Pure Cinema Brand" 
                     className="auth-v2-logo-img"
+                    onClick={(e)=>{e.preventDefault(); setRedirectToHome(true)}}
                 />
             </div>
             <h1 className="auth-v2-neon-text">
